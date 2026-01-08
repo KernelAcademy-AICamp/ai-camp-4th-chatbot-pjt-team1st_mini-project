@@ -1,0 +1,29 @@
+# API 키, 비밀정보
+.env
+*.env
+config/secrets.py
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml
+
+# 테스트
+.pytest_cache/
+*.log
