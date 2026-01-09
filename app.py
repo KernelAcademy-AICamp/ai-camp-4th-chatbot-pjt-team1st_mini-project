@@ -359,7 +359,7 @@ if user_input:
 
 st.markdown("---")
 st.markdown("""
-<div style="text-align: center; color: rgba(212, 175, 55, 0.5); font-size: 12px; padding: 20px 0;">
+<div style="text-align: center; color: rgba(59, 130, 246, 0.6); font-size: 12px; padding: 20px 0;">
     🏛️ Museum Artifact Quiz | Powered by Streamlit
 </div>
 """, unsafe_allow_html=True)

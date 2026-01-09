@@ -9,29 +9,29 @@
 """
 
 # ============================================================
-# 🎨 색상 (Colors)
+# 🎨 색상 (Colors) - 흰색/파란색 테마
 # ============================================================
 
 COLORS = {
     # 메인 색상
-    "primary": "#d4af37",           # 골드 (버튼, 강조)
-    "primary_light": "#f4e4a6",     # 밝은 골드
-    "primary_dark": "#b8941f",      # 어두운 골드
-    
+    "primary": "#3b82f6",           # 파란색 (버튼, 강조)
+    "primary_light": "#bae6fd",     # 연한 하늘색
+    "primary_dark": "#2563eb",      # 진한 파란색
+
     # 배경 색상
-    "background": "#1a1612",        # 메인 배경 (다크 브라운)
-    "background_light": "#2d2419",  # 밝은 배경
-    "surface": "rgba(45, 36, 25, 0.9)",  # 카드/박스 배경
-    
+    "background": "#ffffff",        # 메인 배경 (흰색)
+    "background_light": "#f0f9ff",  # 밝은 배경 (아주 연한 하늘색)
+    "surface": "rgba(255, 255, 255, 0.95)",  # 카드/박스 배경
+
     # 텍스트 색상
-    "text": "#f5f0e1",              # 기본 텍스트 (크림색)
-    "text_secondary": "rgba(212, 175, 55, 0.7)",  # 보조 텍스트
-    "text_on_primary": "#1a1612",   # 버튼 위 텍스트
-    
+    "text": "#1f2937",              # 기본 텍스트 (어두운 회색)
+    "text_secondary": "rgba(59, 130, 246, 0.7)",  # 보조 텍스트 (연한 파랑)
+    "text_on_primary": "#ffffff",   # 버튼 위 텍스트 (흰색)
+
     # 보더/라인
-    "border": "rgba(212, 175, 55, 0.3)",
-    "border_light": "rgba(212, 175, 55, 0.2)",
-    
+    "border": "rgba(59, 130, 246, 0.3)",
+    "border_light": "rgba(59, 130, 246, 0.15)",
+
     # 상태 색상
     "success": "#4ade80",           # 성공 (초록)
     "error": "#f87171",             # 에러 (빨강)
@@ -47,11 +47,11 @@ COLORS = {
 FONTS = {
     # Google Fonts URL (앱에서 자동 로드)
     "import_url": "https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Pretendard:wght@400;500;600;700&display=swap",
-    
+
     # 폰트 패밀리
     "primary": "'Noto Sans KR', 'Pretendard', sans-serif",
     "heading": "'Noto Sans KR', sans-serif",
-    
+
     # 폰트 크기
     "size_xs": "11px",
     "size_sm": "12px",
@@ -82,7 +82,7 @@ SIZING = {
     "border_radius_sm": "10px",
     "border_radius_lg": "20px",
     "border_radius_full": "50%",
-    
+
     "button_height": "48px",
     "input_height": "48px",
     "header_height": "70px",
@@ -95,11 +95,11 @@ SIZING = {
 # ============================================================
 
 EFFECTS = {
-    "shadow_sm": "0 2px 8px rgba(0, 0, 0, 0.2)",
-    "shadow_md": "0 4px 15px rgba(0, 0, 0, 0.25)",
-    "shadow_lg": "0 4px 20px rgba(0, 0, 0, 0.3)",
-    "shadow_gold": "0 4px 15px rgba(212, 175, 55, 0.3)",
-    
+    "shadow_sm": "0 2px 8px rgba(0, 0, 0, 0.08)",
+    "shadow_md": "0 4px 15px rgba(0, 0, 0, 0.1)",
+    "shadow_lg": "0 4px 20px rgba(0, 0, 0, 0.15)",
+    "shadow_blue": "0 4px 15px rgba(59, 130, 246, 0.3)",
+
     "transition": "all 0.2s ease",
     "transition_slow": "all 0.3s ease",
 }
@@ -118,7 +118,7 @@ CHAT_BUBBLE = {
         "max_width": "75%",
         "align": "flex-end",
     },
-    
+
     # AI 메시지 (왼쪽)
     "assistant": {
         "background": COLORS["surface"],
@@ -138,17 +138,17 @@ CHAT_BUBBLE = {
 COMPONENTS = {
     # 헤더
     "header": {
-        "background": f"linear-gradient(180deg, rgba(212, 175, 55, 0.15) 0%, transparent 100%)",
+        "background": f"linear-gradient(180deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%)",
         "border_bottom": f"1px solid {COLORS['border_light']}",
         "padding": SPACING["xl"],
     },
-    
+
     # 사이드바
     "sidebar": {
         "background": COLORS["background"],
         "width": "300px",
     },
-    
+
     # 버튼
     "button_primary": {
         "background": f"linear-gradient(135deg, {COLORS['primary']}, {COLORS['primary_dark']})",
@@ -157,22 +157,22 @@ COMPONENTS = {
         "border_radius": SIZING["border_radius_sm"],
         "font_weight": "600",
     },
-    
+
     "button_secondary": {
-        "background": f"rgba(212, 175, 55, 0.1)",
+        "background": f"rgba(59, 130, 246, 0.1)",
         "color": COLORS["primary"],
         "border": f"1px solid {COLORS['border']}",
         "border_radius": SIZING["border_radius_sm"],
     },
-    
+
     # 입력 필드
     "input": {
-        "background": "rgba(255, 255, 255, 0.05)",
+        "background": "#f8fafc",
         "color": COLORS["text"],
         "border": f"1px solid {COLORS['border']}",
         "border_radius": SIZING["border_radius_lg"],
     },
-    
+
     # 카드
     "card": {
         "background": COLORS["surface"],
@@ -190,18 +190,18 @@ COMPONENTS = {
 
 def generate_css() -> str:
     """위 설정값들로 CSS를 생성합니다."""
-    
+
     return f"""
     <style>
         /* Google Fonts 로드 */
         @import url('{FONTS["import_url"]}');
-        
+
         /* 전체 앱 배경 */
         .stApp {{
             background: linear-gradient(180deg, {COLORS["background"]} 0%, {COLORS["background_light"]} 50%, {COLORS["background"]} 100%);
             font-family: {FONTS["primary"]};
         }}
-        
+
         /* 헤더 */
         .main-header {{
             background: {COMPONENTS["header"]["background"]};
@@ -210,29 +210,29 @@ def generate_css() -> str:
             border: 1px solid {COLORS["border"]};
             margin-bottom: {SPACING["xl"]};
         }}
-        
+
         .main-header h1 {{
-            color: {COLORS["primary_light"]} !important;
+            color: {COLORS["primary_dark"]} !important;
             font-family: {FONTS["heading"]};
             font-size: {FONTS["size_3xl"]};
             margin: 0 !important;
         }}
-        
+
         .main-header p {{
             color: {COLORS["text_secondary"]};
             font-size: {FONTS["size_sm"]};
             margin: {SPACING["xs"]} 0 0 0;
         }}
-        
+
         /* 텍스트 색상 */
-        .stMarkdown {{ 
-            color: {COLORS["text"]}; 
+        .stMarkdown {{
+            color: {COLORS["text"]};
         }}
-        
-        h1, h2, h3, h4 {{ 
-            color: {COLORS["primary_light"]} !important; 
+
+        h1, h2, h3, h4 {{
+            color: {COLORS["primary_dark"]} !important;
         }}
-        
+
         /* 입력 필드 */
         .stTextInput input, .stTextArea textarea {{
             background: {COMPONENTS["input"]["background"]} !important;
@@ -240,11 +240,11 @@ def generate_css() -> str:
             border: {COMPONENTS["input"]["border"]} !important;
             border-radius: {COMPONENTS["input"]["border_radius"]} !important;
         }}
-        
+
         .stTextInput input::placeholder {{
             color: {COLORS["text_secondary"]} !important;
         }}
-        
+
         /* 버튼 - Primary */
         .stButton > button {{
             background: {COMPONENTS["button_primary"]["background"]} !important;
@@ -254,84 +254,84 @@ def generate_css() -> str:
             font-weight: {COMPONENTS["button_primary"]["font_weight"]} !important;
             transition: {EFFECTS["transition"]};
         }}
-        
+
         .stButton > button:hover {{
-            box-shadow: {EFFECTS["shadow_gold"]};
+            box-shadow: {EFFECTS["shadow_blue"]};
             transform: translateY(-1px);
         }}
-        
+
         /* 파일 업로더 */
         .stFileUploader {{
-            background: rgba(212, 175, 55, 0.05);
+            background: rgba(59, 130, 246, 0.05);
             border: 2px dashed {COLORS["border"]};
             border-radius: {SIZING["border_radius"]};
             padding: {SPACING["xl"]};
         }}
-        
+
         /* 셀렉트박스 */
         .stSelectbox > div > div {{
             background: {COMPONENTS["input"]["background"]} !important;
             border: {COMPONENTS["input"]["border"]} !important;
         }}
-        
+
         /* 사이드바 */
         section[data-testid="stSidebar"] {{
             background: {COLORS["background"]} !important;
         }}
-        
+
         section[data-testid="stSidebar"] .stMarkdown {{
             color: {COLORS["text"]};
         }}
-        
+
         /* Expander */
         .streamlit-expanderHeader {{
-            background: rgba(212, 175, 55, 0.1) !important;
+            background: rgba(59, 130, 246, 0.1) !important;
             border-radius: {SIZING["border_radius_sm"]} !important;
         }}
-        
+
         /* 채팅 메시지 컨테이너 */
         .stChatMessage {{
             background: transparent !important;
         }}
-        
+
         /* 스크롤바 */
         ::-webkit-scrollbar {{
             width: 6px;
             height: 6px;
         }}
-        
+
         ::-webkit-scrollbar-track {{
             background: transparent;
         }}
-        
+
         ::-webkit-scrollbar-thumb {{
             background: {COLORS["border"]};
             border-radius: 3px;
         }}
-        
+
         ::-webkit-scrollbar-thumb:hover {{
             background: {COLORS["primary"]};
         }}
-        
+
         /* 링크 */
         a {{
             color: {COLORS["primary"]} !important;
         }}
-        
+
         /* 테이블 */
         table {{
             color: {COLORS["text"]} !important;
         }}
-        
+
         th {{
-            background: rgba(212, 175, 55, 0.2) !important;
-            color: {COLORS["primary_light"]} !important;
+            background: rgba(59, 130, 246, 0.15) !important;
+            color: {COLORS["primary_dark"]} !important;
         }}
-        
+
         td {{
             background: {COLORS["surface"]} !important;
         }}
-        
+
         /* 애니메이션 */
         @keyframes fadeIn {{
             from {{ opacity: 0; transform: translateY(10px); }}
@@ -344,8 +344,8 @@ def generate_css() -> str:
 
         /* 체크박스 스타일 개선 */
         .stCheckbox {{
-            background: rgba(212, 175, 55, 0.05) !important;
-            border: 1px solid rgba(212, 175, 55, 0.2) !important;
+            background: rgba(59, 130, 246, 0.05) !important;
+            border: 1px solid rgba(59, 130, 246, 0.2) !important;
             border-radius: 12px !important;
             padding: 12px 15px !important;
             margin: 5px 0 !important;
@@ -353,10 +353,10 @@ def generate_css() -> str:
         }}
 
         .stCheckbox:hover {{
-            background: rgba(212, 175, 55, 0.1) !important;
-            border-color: rgba(212, 175, 55, 0.4) !important;
+            background: rgba(59, 130, 246, 0.1) !important;
+            border-color: rgba(59, 130, 246, 0.4) !important;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.15);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
         }}
 
         .stCheckbox label {{
@@ -375,15 +375,15 @@ def generate_css() -> str:
 
         /* 선택된 체크박스 */
         .stCheckbox:has(input:checked) {{
-            background: rgba(212, 175, 55, 0.15) !important;
+            background: rgba(59, 130, 246, 0.15) !important;
             border-color: {COLORS["primary"]} !important;
-            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }}
 
         /* 유물 카드 스타일 */
         .artifact-card {{
-            background: rgba(45, 36, 25, 0.8);
-            border: 1px solid rgba(212, 175, 55, 0.2);
+            background: rgba(248, 250, 252, 0.9);
+            border: 1px solid rgba(59, 130, 246, 0.2);
             border-radius: 15px;
             padding: 15px 20px;
             margin: 8px 0;
@@ -392,20 +392,20 @@ def generate_css() -> str:
         }}
 
         .artifact-card:hover {{
-            background: rgba(212, 175, 55, 0.1);
-            border-color: rgba(212, 175, 55, 0.4);
+            background: rgba(59, 130, 246, 0.08);
+            border-color: rgba(59, 130, 246, 0.4);
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);
         }}
 
         .artifact-card.selected {{
-            background: rgba(212, 175, 55, 0.15);
+            background: rgba(59, 130, 246, 0.12);
             border-color: {COLORS["primary"]};
-            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }}
 
         .artifact-card h4 {{
-            color: {COLORS["primary_light"]} !important;
+            color: {COLORS["primary_dark"]} !important;
             margin: 0 0 5px 0 !important;
             font-size: 16px !important;
         }}
@@ -414,6 +414,27 @@ def generate_css() -> str:
             color: {COLORS["text_secondary"]} !important;
             margin: 0 !important;
             font-size: 13px !important;
+        }}
+
+        /* Progress bar 파란색 */
+        .stProgress > div > div > div {{
+            background: linear-gradient(90deg, {COLORS["primary"]}, {COLORS["primary_dark"]}) !important;
+        }}
+
+        /* Success/Warning/Error 메시지 */
+        .stSuccess {{
+            background: rgba(74, 222, 128, 0.1) !important;
+            border: 1px solid rgba(74, 222, 128, 0.3) !important;
+        }}
+
+        .stWarning {{
+            background: rgba(251, 191, 36, 0.1) !important;
+            border: 1px solid rgba(251, 191, 36, 0.3) !important;
+        }}
+
+        .stError {{
+            background: rgba(248, 113, 113, 0.1) !important;
+            border: 1px solid rgba(248, 113, 113, 0.3) !important;
         }}
     </style>
     """
