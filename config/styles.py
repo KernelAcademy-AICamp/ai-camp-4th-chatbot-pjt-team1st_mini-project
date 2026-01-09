@@ -14,24 +14,24 @@
 
 COLORS = {
     # 메인 색상
-    "primary": "#d4af37",           # 골드 (버튼, 강조)
-    "primary_light": "#f4e4a6",     # 밝은 골드
-    "primary_dark": "#b8941f",      # 어두운 골드
-    
+    "primary": "#3b82f6",           # 파란색 (버튼, 강조)
+    "primary_light": "#bae6fd",     # 연한 하늘색
+    "primary_dark": "#2563eb",      # 진한 파란색
+
     # 배경 색상
-    "background": "#1a1612",        # 메인 배경 (다크 브라운)
-    "background_light": "#2d2419",  # 밝은 배경
-    "surface": "rgba(45, 36, 25, 0.9)",  # 카드/박스 배경
-    
+    "background": "#ffffff",        # 메인 배경 (흰색)
+    "background_light": "#f0f9ff",  # 밝은 배경 (아주 연한 하늘색)
+    "surface": "rgba(255, 255, 255, 0.95)",  # 카드/박스 배경
+
     # 텍스트 색상
-    "text": "#f5f0e1",              # 기본 텍스트 (크림색)
-    "text_secondary": "rgba(212, 175, 55, 0.7)",  # 보조 텍스트
-    "text_on_primary": "#1a1612",   # 버튼 위 텍스트
-    
+    "text": "#1f2937",              # 기본 텍스트 (어두운 회색)
+    "text_secondary": "rgba(59, 130, 246, 0.7)",  # 보조 텍스트 (연한 파랑)
+    "text_on_primary": "#ffffff",   # 버튼 위 텍스트 (흰색)
+
     # 보더/라인
-    "border": "rgba(212, 175, 55, 0.3)",
-    "border_light": "rgba(212, 175, 55, 0.2)",
-    
+    "border": "rgba(59, 130, 246, 0.3)",
+    "border_light": "rgba(59, 130, 246, 0.15)",
+
     # 상태 색상
     "success": "#4ade80",           # 성공 (초록)
     "error": "#f87171",             # 에러 (빨강)
@@ -95,11 +95,11 @@ SIZING = {
 # ============================================================
 
 EFFECTS = {
-    "shadow_sm": "0 2px 8px rgba(0, 0, 0, 0.2)",
-    "shadow_md": "0 4px 15px rgba(0, 0, 0, 0.25)",
-    "shadow_lg": "0 4px 20px rgba(0, 0, 0, 0.3)",
-    "shadow_gold": "0 4px 15px rgba(212, 175, 55, 0.3)",
-    
+    "shadow_sm": "0 2px 8px rgba(0, 0, 0, 0.08)",
+    "shadow_md": "0 4px 15px rgba(0, 0, 0, 0.1)",
+    "shadow_lg": "0 4px 20px rgba(0, 0, 0, 0.15)",
+    "shadow_blue": "0 4px 15px rgba(59, 130, 246, 0.3)",
+
     "transition": "all 0.2s ease",
     "transition_slow": "all 0.3s ease",
 }
@@ -138,7 +138,7 @@ CHAT_BUBBLE = {
 COMPONENTS = {
     # 헤더
     "header": {
-        "background": f"linear-gradient(180deg, rgba(212, 175, 55, 0.15) 0%, transparent 100%)",
+        "background": f"linear-gradient(180deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%)",
         "border_bottom": f"1px solid {COLORS['border_light']}",
         "padding": SPACING["xl"],
     },
@@ -159,7 +159,7 @@ COMPONENTS = {
     },
     
     "button_secondary": {
-        "background": f"rgba(212, 175, 55, 0.1)",
+        "background": f"rgba(59, 130, 246, 0.1)",
         "color": COLORS["primary"],
         "border": f"1px solid {COLORS['border']}",
         "border_radius": SIZING["border_radius_sm"],
@@ -167,7 +167,7 @@ COMPONENTS = {
     
     # 입력 필드
     "input": {
-        "background": "rgba(255, 255, 255, 0.05)",
+        "background": "#f8fafc",
         "color": COLORS["text"],
         "border": f"1px solid {COLORS['border']}",
         "border_radius": SIZING["border_radius_lg"],
@@ -212,7 +212,7 @@ def generate_css() -> str:
         }}
         
         .main-header h1 {{
-            color: {COLORS["primary_light"]} !important;
+            color: {COLORS["primary_dark"]} !important;
             font-family: {FONTS["heading"]};
             font-size: {FONTS["size_3xl"]};
             margin: 0 !important;
@@ -229,8 +229,8 @@ def generate_css() -> str:
             color: {COLORS["text"]}; 
         }}
         
-        h1, h2, h3, h4 {{ 
-            color: {COLORS["primary_light"]} !important; 
+        h1, h2, h3, h4 {{
+            color: {COLORS["primary_dark"]} !important;
         }}
         
         /* 입력 필드 */
@@ -256,13 +256,13 @@ def generate_css() -> str:
         }}
         
         .stButton > button:hover {{
-            box-shadow: {EFFECTS["shadow_gold"]};
+            box-shadow: {EFFECTS["shadow_blue"]};
             transform: translateY(-1px);
         }}
         
         /* 파일 업로더 */
         .stFileUploader {{
-            background: rgba(212, 175, 55, 0.05);
+            background: rgba(59, 130, 246, 0.05);
             border: 2px dashed {COLORS["border"]};
             border-radius: {SIZING["border_radius"]};
             padding: {SPACING["xl"]};
@@ -285,7 +285,7 @@ def generate_css() -> str:
         
         /* Expander */
         .streamlit-expanderHeader {{
-            background: rgba(212, 175, 55, 0.1) !important;
+            background: rgba(59, 130, 246, 0.1) !important;
             border-radius: {SIZING["border_radius_sm"]} !important;
         }}
         
@@ -324,8 +324,8 @@ def generate_css() -> str:
         }}
         
         th {{
-            background: rgba(212, 175, 55, 0.2) !important;
-            color: {COLORS["primary_light"]} !important;
+            background: rgba(59, 130, 246, 0.15) !important;
+            color: {COLORS["primary_dark"]} !important;
         }}
         
         td {{
