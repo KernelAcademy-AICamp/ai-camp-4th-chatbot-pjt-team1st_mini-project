@@ -7,6 +7,7 @@ API 문서: https://www.data.go.kr/data/3036708/openapi.do
 """
 
 import requests
+import xml.etree.ElementTree as ET
 from typing import Optional
 
 
@@ -18,10 +19,54 @@ class MuseumAPIService:
     def __init__(self, service_key: str):
         self.service_key = service_key
 
+    def _parse_response(self, response_text: str) -> dict:
+        """XML 또는 JSON 응답 파싱"""
+        # JSON 시도
+        try:
+            import json
+            return json.loads(response_text)
+        except:
+            pass
+
+        # XML 파싱 시도
+        try:
+            root = ET.fromstring(response_text)
+            return self._xml_to_dict(root)
+        except:
+            pass
+
+        return {"raw": response_text}
+
+    def _xml_to_dict(self, element) -> dict:
+        """XML Element를 딕셔너리로 변환"""
+        result = {}
+
+        # 자식 요소가 있는 경우
+        if len(element):
+            for child in element:
+                child_data = self._xml_to_dict(child)
+                tag = child.tag
+
+                # 같은 태그가 여러 개면 리스트로
+                if tag in result:
+                    if not isinstance(result[tag], list):
+                        result[tag] = [result[tag]]
+                    result[tag].append(child_data)
+                else:
+                    result[tag] = child_data
+        else:
+            # 텍스트 값
+            result = element.text if element.text else ""
+
+        return result
+
     def get_codes(self, parent_code: str = "PS01", page: int = 1, rows: int = 10) -> dict:
         """
         코드 목록 조회
-        - PS01: 소장품 분류 코드
+        - PS01: 시대 코드
+        - PS02: 재질 코드
+        - PS03: 지정구분 코드
+        등
         """
         url = f"{self.BASE_URL}/code"
         params = {
@@ -33,59 +78,44 @@ class MuseumAPIService:
 
         try:
             response = requests.get(url, params=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
+            print(f"[DEBUG] Status: {response.status_code}")
+            print(f"[DEBUG] URL: {response.url}")
+            print(f"[DEBUG] Response (first 500 chars): {response.text[:500]}")
+
+            return self._parse_response(response.text)
         except requests.RequestException as e:
             print(f"API 요청 오류: {e}")
             return {"error": str(e)}
 
-    def search_relics(
+    def get_relic_list(
         self,
-        keyword: str = "",
         page: int = 1,
         rows: int = 10,
-        category: str = ""
+        era_code: str = "",
+        material_code: str = ""
     ) -> dict:
         """
-        유물 검색
-        - keyword: 검색어
-        - category: 분류 코드
+        유물 목록 조회
         """
-        url = f"{self.BASE_URL}/relic"
+        url = f"{self.BASE_URL}/relic/list"
         params = {
             "serviceKey": self.service_key,
             "pageNo": str(page),
             "numOfRows": str(rows),
         }
 
-        if keyword:
-            params["searchWord"] = keyword
-        if category:
-            params["categoryCode"] = category
+        if era_code:
+            params["eraCode"] = era_code
+        if material_code:
+            params["materialCode"] = material_code
 
         try:
             response = requests.get(url, params=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            print(f"API 요청 오류: {e}")
-            return {"error": str(e)}
+            print(f"[DEBUG] Status: {response.status_code}")
+            print(f"[DEBUG] URL: {response.url}")
+            print(f"[DEBUG] Response (first 500 chars): {response.text[:500]}")
 
-    def get_relic_detail(self, relic_id: str) -> dict:
-        """
-        유물 상세 정보 조회
-        - relic_id: 유물 ID
-        """
-        url = f"{self.BASE_URL}/relic/detail"
-        params = {
-            "serviceKey": self.service_key,
-            "relicId": relic_id
-        }
-
-        try:
-            response = requests.get(url, params=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
+            return self._parse_response(response.text)
         except requests.RequestException as e:
             print(f"API 요청 오류: {e}")
             return {"error": str(e)}
@@ -93,19 +123,11 @@ class MuseumAPIService:
 
 # 테스트용 코드
 if __name__ == "__main__":
-    import os
-
-    # 환경변수에서 API 키 로드 또는 직접 입력
-    SERVICE_KEY = os.getenv("MUSEUM_API_KEY", "your_service_key_here")
+    # API 키 직접 입력 (테스트용)
+    SERVICE_KEY = "2dkzbWitdGYvTjiqU25D9p%2FH2EbpBg6QKLJO44%2BkOV63KqT%2F9iQb3xRvCiDbBpH138%2BW8dGkNfGE4SC1RoPBIg%3D%3D"
 
     api = MuseumAPIService(SERVICE_KEY)
 
-    # 코드 목록 조회 테스트
     print("=== 코드 목록 조회 ===")
     codes = api.get_codes()
     print(codes)
-
-    # 유물 검색 테스트
-    print("\n=== 유물 검색 ===")
-    relics = api.search_relics(keyword="금관")
-    print(relics)
