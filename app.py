@@ -1,6 +1,6 @@
 """
-🏛️ 박물관 유물 퀴즈
-====================
+🏛️ 박물관 유물 퀴즈 챗봇
+========================
 
 실행: streamlit run app.py
 """
@@ -47,6 +47,47 @@ if "score" not in st.session_state:
 if "answers" not in st.session_state:
     st.session_state.answers = []
 
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+if "quiz_started" not in st.session_state:
+    st.session_state.quiz_started = False
+
+
+# ============================================================
+# 🔧 유틸리티 함수
+# ============================================================
+
+def add_message(role: str, content: str):
+    """채팅 히스토리에 메시지 추가"""
+    st.session_state.chat_history.append({
+        "role": role,
+        "content": content
+    })
+
+
+def display_chat_history():
+    """채팅 히스토리 표시"""
+    for msg in st.session_state.chat_history:
+        with st.chat_message(msg["role"], avatar="🏛️" if msg["role"] == "assistant" else "👤"):
+            st.markdown(msg["content"], unsafe_allow_html=True)
+
+
+def get_encouragement_message(score: int, total: int) -> str:
+    """점수에 따른 응원 메시지"""
+    percentage = (score / total) * 100
+
+    if percentage == 100:
+        return "🎉 완벽해요! 당신은 진정한 문화재 박사입니다!"
+    elif percentage >= 80:
+        return "👏 훌륭해요! 우리 문화재에 대해 잘 알고 계시네요!"
+    elif percentage >= 60:
+        return "😊 좋아요! 조금만 더 공부하면 문화재 전문가가 될 수 있어요!"
+    elif percentage >= 40:
+        return "💪 괜찮아요! 박물관을 방문해서 직접 유물을 감상해보는 건 어떨까요?"
+    else:
+        return "📚 아쉽지만 괜찮아요! 이번 기회에 우리 문화재에 관심을 가져보세요!"
+
 
 # ============================================================
 # 🖥️ 헤더
@@ -62,186 +103,254 @@ st.markdown(
 
 
 # ============================================================
-# 📝 Stage 1: 유물 선택
+# 💬 채팅 컨테이너
 # ============================================================
 
-if st.session_state.stage == "select":
-    st.markdown("## 📜 퀴즈를 풀고 싶은 유물을 선택하세요")
-    st.markdown("**최소 3개 ~ 최대 10개**를 선택할 수 있습니다.")
-    st.markdown("---")
+chat_container = st.container()
 
-    # 체크박스로 유물 선택
-    selected = []
+with chat_container:
+    # 기존 채팅 히스토리 표시
+    display_chat_history()
 
-    cols = st.columns(2)
-    for i, artifact in enumerate(st.session_state.available_artifacts):
-        col = cols[i % 2]
-        with col:
-            if st.checkbox(
-                f"**{artifact['name']}**\n\n{artifact['period']} | {artifact['designation']}",
-                key=f"select_{artifact['id']}"
-            ):
+    # ============================================================
+    # 📝 Stage 1: 유물 선택
+    # ============================================================
+
+    if st.session_state.stage == "select":
+        # 초기 인사 메시지 (한 번만 추가)
+        if not st.session_state.chat_history:
+            with st.chat_message("assistant", avatar="🏛️"):
+                st.markdown("""
+안녕하세요! 박물관 유물 퀴즈에 오신 것을 환영합니다! 🏛️
+
+아래에서 **퀴즈를 풀고 싶은 유물을 선택**해주세요.
+**최소 3개 ~ 최대 10개**를 선택할 수 있습니다.
+                """)
+
+        st.markdown("---")
+        st.markdown("### 📜 유물 선택")
+
+        # 체크박스로 유물 선택
+        selected = []
+
+        for artifact in st.session_state.available_artifacts:
+            col1, col2 = st.columns([0.05, 0.95])
+            with col1:
+                is_checked = st.checkbox(
+                    "",
+                    key=f"select_{artifact['id']}",
+                    label_visibility="collapsed"
+                )
+            with col2:
+                # 커스텀 카드 스타일
+                selected_class = "selected" if is_checked else ""
+                st.markdown(f"""
+                <div class="artifact-card {selected_class}">
+                    <h4>{artifact['name']}</h4>
+                    <p>{artifact['period']} | {artifact['designation']}</p>
+                </div>
+                """, unsafe_allow_html=True)
+
+            if is_checked:
                 selected.append(artifact)
 
-    st.markdown("---")
-
-    # 선택 개수 표시
-    select_count = len(selected)
-
-    if select_count < 3:
-        st.warning(f"⚠️ {select_count}개 선택됨 (최소 3개 필요)")
-    elif select_count > 10:
-        st.error(f"❌ {select_count}개 선택됨 (최대 10개까지)")
-    else:
-        st.success(f"✅ {select_count}개 선택됨")
-
-    # 시작 버튼
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("🎯 퀴즈 시작!", use_container_width=True, disabled=(select_count < 3 or select_count > 10)):
-            st.session_state.selected_artifacts = selected
-            st.session_state.current_quiz_index = 0
-            st.session_state.score = 0
-            st.session_state.answers = []
-            st.session_state.stage = "quiz"
-            st.rerun()
-
-
-# ============================================================
-# 🎯 Stage 2: 퀴즈 진행
-# ============================================================
-
-elif st.session_state.stage == "quiz":
-    total = len(st.session_state.selected_artifacts)
-    current = st.session_state.current_quiz_index
-
-    if current < total:
-        artifact = st.session_state.selected_artifacts[current]
-        quiz = artifact["quiz"]
-
-        # 진행 상황 표시
-        st.markdown(f"### 문제 {current + 1} / {total}")
-        st.progress((current + 1) / total)
-
-        # 유물 정보
-        st.markdown(f"""
-        <div style="background: rgba(212, 175, 55, 0.1); padding: 15px; border-radius: 10px; margin: 10px 0;">
-            <strong>🏛️ {artifact['name']}</strong><br>
-            <span style="color: #888;">{artifact['period']} | {artifact['designation']}</span>
-        </div>
-        """, unsafe_allow_html=True)
-
-        # 질문
-        st.markdown(f"### ❓ {quiz['question']}")
         st.markdown("---")
 
-        # 선택지 버튼
-        for i, option in enumerate(quiz["options"]):
-            if st.button(f"{i + 1}. {option}", key=f"option_{current}_{i}", use_container_width=True):
-                # 정답 체크
-                is_correct = (i == quiz["answer"])
+        # 선택 개수 표시
+        select_count = len(selected)
 
-                if is_correct:
-                    st.session_state.score += 1
+        if select_count < 3:
+            st.warning(f"⚠️ {select_count}개 선택됨 (최소 3개 필요)")
+        elif select_count > 10:
+            st.error(f"❌ {select_count}개 선택됨 (최대 10개까지)")
+        else:
+            st.success(f"✅ {select_count}개 선택됨")
 
-                st.session_state.answers.append({
-                    "artifact": artifact["name"],
-                    "question": quiz["question"],
-                    "user_answer": option,
-                    "correct_answer": quiz["options"][quiz["answer"]],
-                    "is_correct": is_correct,
-                    "explanation": quiz["explanation"]
-                })
+        # 시작 버튼
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            if st.button("🎯 퀴즈 시작!", use_container_width=True, disabled=(select_count < 3 or select_count > 10)):
+                # 선택 메시지 추가
+                artifact_names = ", ".join([a["name"] for a in selected])
+                add_message("user", f"**{select_count}개의 유물을 선택했습니다:**\n{artifact_names}")
+                add_message("assistant", f"좋아요! {select_count}개의 유물에 대한 퀴즈를 시작할게요. 준비되셨나요? 🎯")
 
-                st.session_state.current_quiz_index += 1
+                st.session_state.selected_artifacts = selected
+                st.session_state.current_quiz_index = 0
+                st.session_state.score = 0
+                st.session_state.answers = []
+                st.session_state.stage = "quiz"
+                st.session_state.quiz_started = True
                 st.rerun()
 
-    else:
-        # 모든 퀴즈 완료 -> 결과 화면으로
-        st.session_state.stage = "result"
-        st.rerun()
 
+    # ============================================================
+    # 🎯 Stage 2: 퀴즈 진행
+    # ============================================================
 
-# ============================================================
-# 🏆 Stage 3: 결과 화면
-# ============================================================
+    elif st.session_state.stage == "quiz":
+        total = len(st.session_state.selected_artifacts)
+        current = st.session_state.current_quiz_index
 
-elif st.session_state.stage == "result":
-    total = len(st.session_state.selected_artifacts)
-    score = st.session_state.score
+        if current < total:
+            artifact = st.session_state.selected_artifacts[current]
+            quiz = artifact["quiz"]
 
-    st.markdown("## 🏆 퀴즈 결과")
-    st.markdown("---")
+            # 현재 문제를 채팅 형식으로 표시
+            with st.chat_message("assistant", avatar="🏛️"):
+                st.markdown(f"""
+**문제 {current + 1} / {total}**
 
-    # 점수 표시
-    st.markdown(f"""
-    <div style="text-align: center; padding: 30px; background: rgba(212, 175, 55, 0.15); border-radius: 15px; margin: 20px 0;">
-        <h1 style="font-size: 48px; margin: 0;">{score} / {total}</h1>
-        <p style="font-size: 18px; color: #888;">{total}개 중 {score}개의 정답을 맞췄습니다!</p>
-    </div>
-    """, unsafe_allow_html=True)
+---
 
-    # 응원 문구
-    percentage = (score / total) * 100
+🏛️ **{artifact['name']}**
+<span style="color: #888; font-size: 14px;">{artifact['period']} | {artifact['designation']}</span>
 
-    if percentage == 100:
-        message = "🎉 완벽해요! 당신은 진정한 문화재 박사입니다!"
-    elif percentage >= 80:
-        message = "👏 훌륭해요! 우리 문화재에 대해 잘 알고 계시네요!"
-    elif percentage >= 60:
-        message = "😊 좋아요! 조금만 더 공부하면 문화재 전문가가 될 수 있어요!"
-    elif percentage >= 40:
-        message = "💪 괜찮아요! 박물관을 방문해서 직접 유물을 감상해보는 건 어떨까요?"
-    else:
-        message = "📚 아쉽지만 괜찮아요! 이번 기회에 우리 문화재에 관심을 가져보세요!"
+---
 
-    st.markdown(f"""
-    <div style="text-align: center; padding: 20px; font-size: 20px;">
-        {message}
-    </div>
-    """, unsafe_allow_html=True)
+### ❓ {quiz['question']}
+                """, unsafe_allow_html=True)
 
-    st.markdown("---")
+            # 진행 상황 바
+            st.progress((current + 1) / total)
 
-    # 상세 결과
-    with st.expander("📋 상세 결과 보기"):
-        for i, answer in enumerate(st.session_state.answers):
-            icon = "✅" if answer["is_correct"] else "❌"
-            st.markdown(f"""
-            **{i + 1}. {answer['artifact']}**
-            - 문제: {answer['question']}
-            - 내 답: {answer['user_answer']} {icon}
-            - 정답: {answer['correct_answer']}
-            - 해설: {answer['explanation']}
+            st.markdown("### 정답을 선택하세요:")
 
-            ---
-            """)
+            # 선택지 버튼
+            cols = st.columns(2)
+            for i, option in enumerate(quiz["options"]):
+                col = cols[i % 2]
+                with col:
+                    if st.button(f"{i + 1}. {option}", key=f"option_{current}_{i}", use_container_width=True):
+                        # 정답 체크
+                        is_correct = (i == quiz["answer"])
 
-    st.markdown("---")
+                        # 사용자 답변 메시지 추가
+                        add_message("user", f"**{i + 1}번:** {option}")
 
-    # 마무리 메시지
-    st.info("🏛️ 모두 알아봤다면 **'나가기'**라고 응답해주세요.")
+                        # 결과 메시지 추가
+                        if is_correct:
+                            st.session_state.score += 1
+                            result_msg = f"""
+✅ **정답입니다!**
 
-    # 다시 하기 버튼
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("🔄 다시 도전하기", use_container_width=True):
-            st.session_state.stage = "select"
-            st.session_state.available_artifacts = get_random_artifacts(10)
-            st.session_state.selected_artifacts = []
-            st.session_state.current_quiz_index = 0
-            st.session_state.score = 0
-            st.session_state.answers = []
+{quiz['explanation']}
+                            """
+                        else:
+                            result_msg = f"""
+❌ **아쉽네요!**
+
+정답은 **{quiz['options'][quiz['answer']]}** 입니다.
+
+{quiz['explanation']}
+                            """
+
+                        add_message("assistant", result_msg)
+
+                        st.session_state.answers.append({
+                            "artifact": artifact["name"],
+                            "question": quiz["question"],
+                            "user_answer": option,
+                            "correct_answer": quiz["options"][quiz["answer"]],
+                            "is_correct": is_correct,
+                            "explanation": quiz["explanation"]
+                        })
+
+                        st.session_state.current_quiz_index += 1
+                        st.rerun()
+
+        else:
+            # 모든 퀴즈 완료 -> 결과 화면으로
+            st.session_state.stage = "result"
             st.rerun()
 
-    # 나가기 입력
-    user_input = st.chat_input("메시지를 입력하세요...")
-    if user_input:
+
+    # ============================================================
+    # 🏆 Stage 3: 결과 화면
+    # ============================================================
+
+    elif st.session_state.stage == "result":
+        total = len(st.session_state.selected_artifacts)
+        score = st.session_state.score
+
+        # 결과 메시지 (한 번만 추가)
+        result_already_shown = any("🏆 퀴즈 완료!" in msg.get("content", "") for msg in st.session_state.chat_history)
+
+        if not result_already_shown:
+            encouragement = get_encouragement_message(score, total)
+
+            result_content = f"""
+### 🏆 퀴즈 완료!
+
+---
+
+<div style="text-align: center; padding: 20px; background: rgba(212, 175, 55, 0.15); border-radius: 15px; margin: 15px 0;">
+    <h1 style="font-size: 42px; margin: 0; color: #f4e4a6;">{score} / {total}</h1>
+    <p style="font-size: 16px; color: #888;">{total}개 중 {score}개 정답!</p>
+</div>
+
+{encouragement}
+
+---
+
+모든 문제를 확인하셨다면 **'나가기'**라고 입력해주세요.
+또는 아래 버튼으로 다시 도전할 수 있어요!
+            """
+            add_message("assistant", result_content)
+            st.rerun()
+
+        # 상세 결과 보기
+        with st.expander("📋 상세 결과 보기"):
+            for i, answer in enumerate(st.session_state.answers):
+                icon = "✅" if answer["is_correct"] else "❌"
+                st.markdown(f"""
+**{i + 1}. {answer['artifact']}** {icon}
+
+- 문제: {answer['question']}
+- 내 답: {answer['user_answer']}
+- 정답: {answer['correct_answer']}
+- 해설: {answer['explanation']}
+
+---
+                """)
+
+        # 다시 하기 버튼
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            if st.button("🔄 다시 도전하기", use_container_width=True):
+                # 새 게임 시작 메시지
+                add_message("user", "다시 도전할게요!")
+                add_message("assistant", "좋아요! 새로운 유물들로 다시 시작해볼까요? 🏛️")
+
+                st.session_state.stage = "select"
+                st.session_state.available_artifacts = get_random_artifacts(10)
+                st.session_state.selected_artifacts = []
+                st.session_state.current_quiz_index = 0
+                st.session_state.score = 0
+                st.session_state.answers = []
+                st.session_state.quiz_started = False
+                st.rerun()
+
+
+# ============================================================
+# 💬 채팅 입력
+# ============================================================
+
+user_input = st.chat_input("메시지를 입력하세요...")
+
+if user_input:
+    add_message("user", user_input)
+
+    if st.session_state.stage == "result":
         if "나가기" in user_input:
+            add_message("assistant", "👋 감사합니다! 박물관 유물 퀴즈를 즐겨주셔서 감사해요. 다음에 또 만나요!")
             st.balloons()
-            st.success("👋 감사합니다! 다음에 또 만나요!")
         else:
-            st.info("🏛️ 퀴즈가 종료되었습니다. '나가기'를 입력하거나 '다시 도전하기' 버튼을 눌러주세요.")
+            add_message("assistant", "🏛️ 퀴즈가 종료되었습니다. **'나가기'**를 입력하거나 **'다시 도전하기'** 버튼을 눌러주세요.")
+    else:
+        add_message("assistant", "🏛️ 먼저 유물을 선택하고 퀴즈를 진행해주세요!")
+
+    st.rerun()
 
 
 # ============================================================

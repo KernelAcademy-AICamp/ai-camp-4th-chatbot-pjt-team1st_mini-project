@@ -337,9 +337,83 @@ def generate_css() -> str:
             from {{ opacity: 0; transform: translateY(10px); }}
             to {{ opacity: 1; transform: translateY(0); }}
         }}
-        
+
         .fade-in {{
             animation: fadeIn 0.3s ease-out;
+        }}
+
+        /* 체크박스 스타일 개선 */
+        .stCheckbox {{
+            background: rgba(212, 175, 55, 0.05) !important;
+            border: 1px solid rgba(212, 175, 55, 0.2) !important;
+            border-radius: 12px !important;
+            padding: 12px 15px !important;
+            margin: 5px 0 !important;
+            transition: all 0.2s ease !important;
+        }}
+
+        .stCheckbox:hover {{
+            background: rgba(212, 175, 55, 0.1) !important;
+            border-color: rgba(212, 175, 55, 0.4) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.15);
+        }}
+
+        .stCheckbox label {{
+            color: {COLORS["text"]} !important;
+            font-size: 14px !important;
+        }}
+
+        .stCheckbox [data-testid="stCheckbox"] {{
+            gap: 12px !important;
+        }}
+
+        /* 체크박스 아이콘 */
+        .stCheckbox svg {{
+            fill: {COLORS["primary"]} !important;
+        }}
+
+        /* 선택된 체크박스 */
+        .stCheckbox:has(input:checked) {{
+            background: rgba(212, 175, 55, 0.15) !important;
+            border-color: {COLORS["primary"]} !important;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }}
+
+        /* 유물 카드 스타일 */
+        .artifact-card {{
+            background: rgba(45, 36, 25, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin: 8px 0;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }}
+
+        .artifact-card:hover {{
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }}
+
+        .artifact-card.selected {{
+            background: rgba(212, 175, 55, 0.15);
+            border-color: {COLORS["primary"]};
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+        }}
+
+        .artifact-card h4 {{
+            color: {COLORS["primary_light"]} !important;
+            margin: 0 0 5px 0 !important;
+            font-size: 16px !important;
+        }}
+
+        .artifact-card p {{
+            color: {COLORS["text_secondary"]} !important;
+            margin: 0 !important;
+            font-size: 13px !important;
         }}
     </style>
     """
