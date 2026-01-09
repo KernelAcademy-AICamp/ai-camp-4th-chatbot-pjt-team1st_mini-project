@@ -17,8 +17,8 @@ class MuseumAPIService:
     BASE_URL = "http://www.emuseum.go.kr/openapi"
 
     def __init__(self, service_key: str):
-        # URL 인코딩된 키를 디코딩해서 저장
-        self.service_key = unquote(service_key)
+        # 디코딩된 키를 그대로 사용
+        self.service_key = service_key
 
     def _parse_response(self, response_text: str) -> dict:
         """XML 또는 JSON 응답 파싱"""
@@ -132,8 +132,8 @@ class MuseumAPIService:
 
 # 테스트용 코드
 if __name__ == "__main__":
-    # API 키 (URL 인코딩된 상태 그대로 입력)
-    SERVICE_KEY = "2dkzbWitdGYvTjiqU25D9p%2FH2EbpBg6QKLJO44%2BkOV63KqT%2F9iQb3xRvCiDbBpH138%2BW8dGkNfGE4SC1RoPBIg%3D%3D"
+    # API 키 (디코딩된 키 사용)
+    SERVICE_KEY = "2dkzbWitdGYvTjiqU25D9p/H2EbpBg6QKLJO44+kOV63KqT/9iQb3xRvCiDbBpH138+W8dGkNfGE4SC1RoPBIg=="
 
     api = MuseumAPIService(SERVICE_KEY)
 
