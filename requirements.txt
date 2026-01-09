@@ -1,10 +1,5 @@
 # 필수 패키지
 streamlit>=1.30.0
 anthropic>=0.18.0
-pillow>=10.0.0
-
-# 선택 패키지 (OCR)
-# pytesseract>=0.3.10
-
-# API 호출
 requests>=2.31.0
+python-dotenv>=1.0.0
