@@ -8,7 +8,7 @@ API 문서: https://www.data.go.kr/data/3036708/openapi.do
 
 import requests
 import xml.etree.ElementTree as ET
-from typing import Optional
+from urllib.parse import unquote
 
 
 class MuseumAPIService:
@@ -17,10 +17,15 @@ class MuseumAPIService:
     BASE_URL = "http://www.emuseum.go.kr/openapi"
 
     def __init__(self, service_key: str):
-        self.service_key = service_key
+        # URL 인코딩된 키를 디코딩해서 저장
+        self.service_key = unquote(service_key)
 
     def _parse_response(self, response_text: str) -> dict:
         """XML 또는 JSON 응답 파싱"""
+        # 빈 응답 체크
+        if not response_text or not response_text.strip():
+            return {"error": "빈 응답"}
+
         # JSON 시도
         try:
             import json
@@ -32,10 +37,10 @@ class MuseumAPIService:
         try:
             root = ET.fromstring(response_text)
             return self._xml_to_dict(root)
-        except:
+        except Exception as e:
             pass
 
-        return {"raw": response_text}
+        return {"raw": response_text[:500]}
 
     def _xml_to_dict(self, element) -> dict:
         """XML Element를 딕셔너리로 변환"""
@@ -66,7 +71,6 @@ class MuseumAPIService:
         - PS01: 시대 코드
         - PS02: 재질 코드
         - PS03: 지정구분 코드
-        등
         """
         url = f"{self.BASE_URL}/code"
         params = {
@@ -80,7 +84,11 @@ class MuseumAPIService:
             response = requests.get(url, params=params, timeout=10)
             print(f"[DEBUG] Status: {response.status_code}")
             print(f"[DEBUG] URL: {response.url}")
-            print(f"[DEBUG] Response (first 500 chars): {response.text[:500]}")
+            print(f"[DEBUG] Content-Type: {response.headers.get('Content-Type', 'N/A')}")
+            print(f"[DEBUG] Response (first 500 chars):\n{response.text[:500]}")
+
+            if response.status_code != 200:
+                return {"error": f"HTTP {response.status_code}", "body": response.text[:200]}
 
             return self._parse_response(response.text)
         except requests.RequestException as e:
@@ -91,29 +99,30 @@ class MuseumAPIService:
         self,
         page: int = 1,
         rows: int = 10,
-        era_code: str = "",
-        material_code: str = ""
+        search_word: str = ""
     ) -> dict:
         """
         유물 목록 조회
         """
-        url = f"{self.BASE_URL}/relic/list"
+        url = f"{self.BASE_URL}/relic"
         params = {
             "serviceKey": self.service_key,
             "pageNo": str(page),
             "numOfRows": str(rows),
         }
 
-        if era_code:
-            params["eraCode"] = era_code
-        if material_code:
-            params["materialCode"] = material_code
+        if search_word:
+            params["searchWord"] = search_word
 
         try:
             response = requests.get(url, params=params, timeout=10)
             print(f"[DEBUG] Status: {response.status_code}")
             print(f"[DEBUG] URL: {response.url}")
-            print(f"[DEBUG] Response (first 500 chars): {response.text[:500]}")
+            print(f"[DEBUG] Content-Type: {response.headers.get('Content-Type', 'N/A')}")
+            print(f"[DEBUG] Response (first 500 chars):\n{response.text[:500]}")
+
+            if response.status_code != 200:
+                return {"error": f"HTTP {response.status_code}", "body": response.text[:200]}
 
             return self._parse_response(response.text)
         except requests.RequestException as e:
@@ -123,11 +132,19 @@ class MuseumAPIService:
 
 # 테스트용 코드
 if __name__ == "__main__":
-    # API 키 직접 입력 (테스트용)
+    # API 키 (URL 인코딩된 상태 그대로 입력)
     SERVICE_KEY = "2dkzbWitdGYvTjiqU25D9p%2FH2EbpBg6QKLJO44%2BkOV63KqT%2F9iQb3xRvCiDbBpH138%2BW8dGkNfGE4SC1RoPBIg%3D%3D"
 
     api = MuseumAPIService(SERVICE_KEY)
 
-    print("=== 코드 목록 조회 ===")
+    print("=" * 50)
+    print("=== 코드 목록 조회 테스트 ===")
+    print("=" * 50)
     codes = api.get_codes()
-    print(codes)
+    print("\n결과:", codes)
+
+    print("\n" + "=" * 50)
+    print("=== 유물 목록 조회 테스트 ===")
+    print("=" * 50)
+    relics = api.get_relic_list()
+    print("\n결과:", relics)
