@@ -20,6 +20,25 @@ class MuseumAPIService:
     # 국립중앙박물관 코드
     NATIONAL_MUSEUM_CODE = "PS01001001"
 
+    # 국립중앙박물관 주요 유물 ID 목록 (ID로만 조회 가능)
+    ARTIFACT_IDS = [
+        "PS0100100100100240600000",  # 대당평백제비 탁본
+        "PS0100100100100012300000",  # 금동미륵보살반가사유상
+        "PS0100100100100015700000",  # 백자 달항아리
+        "PS0100100100100000100000",  # 반가사유상
+        "PS0100100100100001200000",  # 청자 상감운학문 매병
+        "PS0100100100100003500000",  # 금관
+        "PS0100100100100009800000",  # 경천사지 십층석탑
+        "PS0100100100100005600000",  # 청동은입사포류수금문정병
+        "PS0100100100100007800000",  # 금동연가7년명여래입상
+        "PS0100100100100011200000",  # 천마총 금관
+        "PS0100100100100018900000",  # 고려청자
+        "PS0100100100100022300000",  # 분청사기
+        "PS0100100100100025600000",  # 조선백자
+        "PS0100100100100028900000",  # 신라 토기
+        "PS0100100100100031200000",  # 고구려 벽화
+    ]
+
     def __init__(self, service_key: str = None):
         self.service_key = service_key or os.getenv("MUSEUM_API_KEY", "")
 
@@ -196,38 +215,85 @@ class MuseumAPIService:
         """
         랜덤으로 소장품 가져오기
 
-        국립중앙박물관 API에서 소장품을 가져와서 랜덤으로 선택
+        미리 정의된 유물 ID 목록에서 랜덤 선택 후 API로 상세 조회
         """
         if not self.service_key:
             print("⚠️ MUSEUM_API_KEY가 설정되지 않았습니다.")
             return []
 
-        # 랜덤 페이지에서 소장품 가져오기
-        random_page = random.randint(1, 20)
-        artifacts = self.fetch_artifacts(page=random_page, rows=50)
+        # 랜덤으로 ID 선택
+        selected_ids = random.sample(
+            self.ARTIFACT_IDS,
+            min(count, len(self.ARTIFACT_IDS))
+        )
 
-        if not artifacts:
-            # 첫 페이지 시도
-            artifacts = self.fetch_artifacts(page=1, rows=50)
+        artifacts = []
+        for artifact_id in selected_ids:
+            artifact = self.fetch_artifact_by_id(artifact_id)
+            if artifact:
+                artifacts.append(artifact)
 
         if not artifacts:
             print("⚠️ API에서 소장품을 가져오지 못했습니다.")
             return []
 
-        # 랜덤 선택
-        selected = random.sample(
-            artifacts,
-            min(count, len(artifacts))
-        )
+        print(f"✅ API에서 {len(artifacts)}개 유물 로드 완료")
+        return artifacts
 
-        # 표준 형식으로 변환
-        return [self._convert_to_standard_format(a) for a in selected]
+    def fetch_artifact_by_id(self, artifact_id: str) -> dict | None:
+        """
+        ID로 소장품 상세 조회
+
+        Parameters:
+        - artifact_id: 소장품 고유 ID
+        """
+        url = f"{self.BASE_URL}/relic/list"
+        params = {
+            "serviceKey": self.service_key,
+            "pageNo": "1",
+            "numOfRows": "1",
+            "id": artifact_id
+        }
+
+        try:
+            response = requests.get(url, params=params, timeout=10)
+
+            if response.status_code != 200:
+                print(f"API 오류: HTTP {response.status_code}")
+                return None
+
+            # XML 파싱
+            artifacts = self._parse_list_response(response.text)
+            if artifacts:
+                return self._convert_to_standard_format(artifacts[0])
+
+        except requests.RequestException as e:
+            print(f"API 요청 오류: {e}")
+
+        return None
 
     def _convert_to_standard_format(self, api_artifact: dict) -> dict:
         """API 데이터를 앱 표준 형식으로 변환"""
 
         artifact_id = api_artifact.get("id", f"API-{random.randint(1000, 9999)}")
-        name = api_artifact.get("name", api_artifact.get("nameKr", "알 수 없음"))
+
+        # 이름: nameKr > name 순서로 시도
+        name = api_artifact.get("nameKr") or api_artifact.get("name", "알 수 없음")
+
+        # 시대/국적: nationalityName1 필드 사용
+        period = api_artifact.get("nationalityName1", "시대 미상")
+
+        # 재질: materialName1 필드 사용
+        material = api_artifact.get("materialName1", "")
+
+        # 설명: desc 필드 사용
+        description = api_artifact.get("desc", "")
+
+        # 이미지: imgUri 또는 imgThumUriL 사용
+        image_url = api_artifact.get("imgUri") or api_artifact.get("imgThumUriL", "")
+
+        # 용도/분류
+        purpose = api_artifact.get("purposeName2", api_artifact.get("purposeName1", ""))
 
         return {
             "id": artifact_id,
@@ -235,12 +301,12 @@ class MuseumAPIService:
             "name_kr": api_artifact.get("nameKr", name),
             "name_cn": api_artifact.get("nameCn", ""),
             "name_en": api_artifact.get("nameEn", ""),
-            "period": api_artifact.get("nationality", api_artifact.get("era", "시대 미상")),
-            "material": api_artifact.get("material", ""),
+            "period": period,
+            "material": material,
             "location": "국립중앙박물관",
-            "designation": api_artifact.get("designation", ""),
-            "description": api_artifact.get("content", api_artifact.get("description", "")),
-            "image_url": api_artifact.get("imageUrl", ""),
+            "designation": purpose,  # 용도를 지정구분 대신 사용
+            "description": description,
+            "image_url": image_url,
             # 퀴즈는 나중에 Gemini로 생성
             "quiz": None,
             # 원본 API 데이터 보관
