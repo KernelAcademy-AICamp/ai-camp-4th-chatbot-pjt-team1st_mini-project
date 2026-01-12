@@ -316,18 +316,18 @@ def get_artifact_by_id(artifact_id: str) -> dict | None:
     return None
 
 
-def get_random_artifacts(count: int = 10, use_api: bool = False) -> list:
+def get_random_artifacts(count: int = 10, use_api: bool = True) -> list:
     """
     랜덤으로 유물을 선택합니다.
 
     Parameters:
         count: 가져올 유물 개수
-        use_api: API 사용 여부 (기본 False - JSON 데이터 사용)
+        use_api: API 사용 여부 (기본 True - API 우선 사용)
 
     Returns:
         list: 유물 목록
     """
-    # API에서 가져오기 시도 (비활성화됨)
+    # API에서 가져오기 시도
     if use_api:
         api_artifacts = fetch_artifacts_from_api(count=count)
         if api_artifacts:
