@@ -401,6 +401,8 @@ def _generate_quiz_with_gemini(llm, artifact: dict) -> dict:
 - 이름: {artifact.get('name', '알 수 없음')}
 - 시대: {artifact.get('period', '시대 미상')}
 - 재질: {artifact.get('material', '')}
+- 지정: {artifact.get('designation', '')}
+- 전시실: {artifact.get('gallery', '')}
 - 설명: {artifact.get('description', '')}
 
 다음 JSON 형식으로 정확히 응답해주세요:
@@ -413,8 +415,9 @@ def _generate_quiz_with_gemini(llm, artifact: dict) -> dict:
 
 주의:
 - answer는 정답의 인덱스 (0-3)
-- 질문은 유물의 특징이나 역사적 의의에 관한 것
-- 선택지는 비슷해 보이지만 명확히 구분되어야 함
+- 질문은 유물의 특징, 시대, 재질, 전시 위치 등에 관한 것
+- 선택지는 그럴듯해 보이지만 명확히 구분되어야 함
+- 너무 쉽거나 너무 어렵지 않은 중간 난이도
 """
 
     try:
