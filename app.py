@@ -202,23 +202,61 @@ with chat_container:
         st.markdown("---")
         st.markdown("### 📜 유물 선택 (클릭하여 선택/해제)")
 
-        # 카드 클릭으로 유물 선택
-        cols = st.columns(2)
+        # 카드 리스트 형태로 유물 표시
         for i, artifact in enumerate(st.session_state.available_artifacts):
-            col = cols[i % 2]
-            with col:
-                is_selected = artifact['id'] in st.session_state.selected_ids
-                selected_class = "selected" if is_selected else ""
-                selected_icon = "✅ " if is_selected else ""
+            is_selected = artifact['id'] in st.session_state.selected_ids
 
+            # 카드 스타일 컨테이너
+            card_bg = "rgba(59, 130, 246, 0.1)" if is_selected else "rgba(248, 250, 252, 0.95)"
+            card_border = "2px solid #3B82F6" if is_selected else "1px solid #E2E8F0"
+
+            col1, col2, col3 = st.columns([1, 4, 1])
+
+            with col1:
+                # 왼쪽: 아이콘/이미지 영역
+                st.markdown(f"""
+                <div style="
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    border-radius: 8px;
+                    padding: 15px;
+                    text-align: center;
+                    color: white;
+                    font-size: 24px;
+                    height: 70px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                ">🏛️</div>
+                """, unsafe_allow_html=True)
+
+            with col2:
+                # 가운데: 유물 정보
+                st.markdown(f"""
+                <div style="padding: 5px 0;">
+                    <div style="font-weight: 600; font-size: 16px; color: #1E293B;">
+                        {'✅ ' if is_selected else ''}{artifact['name']}
+                    </div>
+                    <div style="font-size: 13px; color: #64748B; margin-top: 4px;">
+                        📍 {artifact.get('gallery', '국립중앙박물관')}
+                    </div>
+                    <div style="font-size: 12px; color: #94A3B8; margin-top: 2px;">
+                        {artifact.get('designation', '')} · {artifact['period']}
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            with col3:
+                # 오른쪽: 선택 버튼
                 if st.button(
-                    f"{selected_icon}{artifact['name']}\n{artifact['period']}",
-                    key=f"card_{artifact['id']}",
-                    use_container_width=True,
+                    "✓" if is_selected else "○",
+                    key=f"select_{artifact['id']}",
                     type="primary" if is_selected else "secondary"
                 ):
                     toggle_artifact_selection(artifact['id'])
                     st.rerun()
+
+            # 구분선
+            st.markdown("<hr style='margin: 8px 0; border: none; border-top: 1px solid #E2E8F0;'>", unsafe_allow_html=True)
 
         # 선택된 유물 리스트 생성
         selected = [a for a in st.session_state.available_artifacts if a['id'] in st.session_state.selected_ids]
