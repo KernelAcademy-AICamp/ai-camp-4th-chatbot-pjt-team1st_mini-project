@@ -2,12 +2,12 @@
 🤖 llm_service.py - AI 서비스
 ==============================
 
-Claude API 연동 로직입니다.
-개발자만 수정합니다.
+Google Gemini API 연동 로직입니다.
 """
 
 import json
 import re
+import os
 from config.prompts import (
     SYSTEM_PROMPT,
     ARTIFACT_CONTEXT,
@@ -18,18 +18,24 @@ from config.settings import AI_CONFIG
 
 
 class LLMService:
-    """Claude API 연동 서비스"""
+    """Google Gemini API 연동 서비스"""
 
     def __init__(self, api_key: str = None):
         self.api_key = api_key
         self.client = None
+        self.model = None
 
         if api_key:
             try:
-                import anthropic
-                self.client = anthropic.Anthropic(api_key=api_key)
+                import google.generativeai as genai
+                genai.configure(api_key=api_key)
+                self.model = genai.GenerativeModel('gemini-1.5-flash')
+                self.client = True  # 클라이언트 활성화 표시
+                print("✅ Gemini API 연결됨")
             except ImportError:
-                print("⚠️ anthropic 패키지를 설치해주세요: pip install anthropic")
+                print("⚠️ google-generativeai 패키지를 설치해주세요: pip install google-generativeai")
+            except Exception as e:
+                print(f"⚠️ Gemini 초기화 오류: {e}")
 
     def build_system_prompt(self, artifact: dict = None) -> str:
         """시스템 프롬프트 생성"""
@@ -57,18 +63,12 @@ class LLMService:
 
         system_prompt = self.build_system_prompt(artifact)
 
-        # API 클라이언트가 있으면 실제 호출
-        if self.client:
+        # Gemini API 호출
+        if self.model:
             try:
-                response = self.client.messages.create(
-                    model=AI_CONFIG["model"],
-                    max_tokens=AI_CONFIG["max_tokens"],
-                    system=system_prompt,
-                    messages=[
-                        {"role": "user", "content": user_message}
-                    ]
-                )
-                return response.content[0].text
+                full_prompt = f"{system_prompt}\n\n사용자: {user_message}"
+                response = self.model.generate_content(full_prompt)
+                return response.text
             except Exception as e:
                 return f"API 오류: {str(e)}"
 
@@ -78,22 +78,16 @@ class LLMService:
     def generate_quiz(self, artifact: dict) -> dict:
         """퀴즈 생성"""
 
-        if self.client:
+        if self.model:
             try:
                 prompt = QUIZ_PROMPT.format(
                     artifact_name=artifact["name"]
                 )
 
-                response = self.client.messages.create(
-                    model=AI_CONFIG["model"],
-                    max_tokens=500,
-                    messages=[
-                        {"role": "user", "content": prompt}
-                    ]
-                )
+                response = self.model.generate_content(prompt)
 
                 # JSON 파싱
-                response_text = response.content[0].text
+                response_text = response.text
                 json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
                 if json_match:
                     return json.loads(json_match.group())
@@ -147,8 +141,8 @@ class LLMService:
         if not user_question or not user_question.strip():
             return base_explanation
 
-        # API 클라이언트가 있으면 맞춤 해설 생성
-        if self.client:
+        # Gemini API로 맞춤 해설 생성
+        if self.model:
             try:
                 prompt = f"""당신은 박물관 큐레이터입니다.
 사용자가 유물 퀴즈를 풀면서 궁금한 점을 질문했습니다.
@@ -172,14 +166,8 @@ class LLMService:
 
 응답은 300자 이내로 간결하게 작성해주세요."""
 
-                response = self.client.messages.create(
-                    model=AI_CONFIG["model"],
-                    max_tokens=500,
-                    messages=[
-                        {"role": "user", "content": prompt}
-                    ]
-                )
-                return response.content[0].text
+                response = self.model.generate_content(prompt)
+                return response.text
             except Exception as e:
                 print(f"맞춤 해설 생성 오류: {e}")
 

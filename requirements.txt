@@ -1,5 +1,5 @@
 # 필수 패키지
 streamlit>=1.30.0
-anthropic>=0.18.0
+google-generativeai>=0.3.0
 requests>=2.31.0
 python-dotenv>=1.0.0
