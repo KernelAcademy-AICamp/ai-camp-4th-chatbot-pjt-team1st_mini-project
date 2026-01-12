@@ -10,6 +10,7 @@ import streamlit as st
 from config.styles import generate_css, get_header_html
 from config.settings import APP_CONFIG
 from data.artifacts import ARTIFACTS, get_random_artifacts
+from services.llm_service import LLMService
 
 
 # ============================================================
@@ -52,6 +53,15 @@ if "chat_history" not in st.session_state:
 
 if "quiz_started" not in st.session_state:
     st.session_state.quiz_started = False
+
+if "api_key" not in st.session_state:
+    st.session_state.api_key = ""
+
+if "llm_service" not in st.session_state:
+    st.session_state.llm_service = LLMService()
+
+if "user_question" not in st.session_state:
+    st.session_state.user_question = ""
 
 
 # ============================================================
@@ -100,6 +110,48 @@ st.markdown(
     ),
     unsafe_allow_html=True
 )
+
+
+# ============================================================
+# ⚙️ 사이드바: API 키 설정
+# ============================================================
+
+with st.sidebar:
+    st.markdown("## ⚙️ 설정")
+    st.markdown("---")
+
+    st.markdown("### 🔑 Claude API 키")
+    api_key = st.text_input(
+        "API Key",
+        type="password",
+        value=st.session_state.api_key,
+        placeholder="sk-ant-...",
+        label_visibility="collapsed"
+    )
+
+    if api_key != st.session_state.api_key:
+        st.session_state.api_key = api_key
+        st.session_state.llm_service = LLMService(api_key)
+        if api_key:
+            st.success("✅ API 연결됨!")
+
+    if st.session_state.api_key:
+        st.info("🤖 AI 맞춤 해설이 활성화되었습니다.")
+    else:
+        st.warning("💡 API 키 없이도 기본 기능은 사용 가능합니다.\n\nAPI 키를 입력하면 궁금한 점에 대한 맞춤 해설을 받을 수 있어요!")
+
+    st.markdown("---")
+    st.markdown("### 📊 현재 진행 상황")
+
+    if st.session_state.stage == "select":
+        st.markdown("📝 유물 선택 중...")
+    elif st.session_state.stage == "quiz":
+        total = len(st.session_state.selected_artifacts)
+        current = st.session_state.current_quiz_index
+        st.markdown(f"🎯 퀴즈 진행 중: {current + 1} / {total}")
+        st.progress((current + 1) / total)
+    elif st.session_state.stage == "result":
+        st.markdown(f"🏆 완료! 점수: {st.session_state.score}/{len(st.session_state.selected_artifacts)}")
 
 
 # ============================================================
@@ -214,6 +266,18 @@ with chat_container:
             # 진행 상황 바
             st.progress((current + 1) / total)
 
+            # 주관식 입력 (궁금한 점)
+            st.markdown("---")
+            st.markdown("### 💬 궁금한 점이 있나요? (선택사항)")
+            user_question = st.text_area(
+                "이 유물에 대해 궁금한 점을 자유롭게 작성해주세요.",
+                placeholder="예: 이 유물은 어떻게 발견되었나요? / 비슷한 유물이 또 있나요? / 실제로 어디서 볼 수 있나요?",
+                key=f"question_{current}",
+                height=80,
+                label_visibility="collapsed"
+            )
+
+            st.markdown("---")
             st.markdown("### 정답을 선택하세요:")
 
             # 선택지 버튼
@@ -225,16 +289,29 @@ with chat_container:
                         # 정답 체크
                         is_correct = (i == quiz["answer"])
 
+                        if is_correct:
+                            st.session_state.score += 1
+
                         # 사용자 답변 메시지 추가
-                        add_message("user", f"**{i + 1}번:** {option}")
+                        user_msg = f"**{i + 1}번:** {option}"
+                        if user_question and user_question.strip():
+                            user_msg += f"\n\n💬 **궁금한 점:** {user_question}"
+                        add_message("user", user_msg)
+
+                        # 맞춤 해설 생성 (LLM 사용)
+                        enhanced_explanation = st.session_state.llm_service.generate_enhanced_explanation(
+                            artifact=artifact,
+                            quiz=quiz,
+                            is_correct=is_correct,
+                            user_question=user_question
+                        )
 
                         # 결과 메시지 추가
                         if is_correct:
-                            st.session_state.score += 1
                             result_msg = f"""
 ✅ **정답입니다!**
 
-{quiz['explanation']}
+{enhanced_explanation}
                             """
                         else:
                             result_msg = f"""
@@ -242,7 +319,7 @@ with chat_container:
 
 정답은 **{quiz['options'][quiz['answer']]}** 입니다.
 
-{quiz['explanation']}
+{enhanced_explanation}
                             """
 
                         add_message("assistant", result_msg)
@@ -253,7 +330,8 @@ with chat_container:
                             "user_answer": option,
                             "correct_answer": quiz["options"][quiz["answer"]],
                             "is_correct": is_correct,
-                            "explanation": quiz["explanation"]
+                            "user_question": user_question,
+                            "explanation": enhanced_explanation
                         })
 
                         st.session_state.current_quiz_index += 1
@@ -284,8 +362,8 @@ with chat_container:
 
 ---
 
-<div style="text-align: center; padding: 20px; background: rgba(212, 175, 55, 0.15); border-radius: 15px; margin: 15px 0;">
-    <h1 style="font-size: 42px; margin: 0; color: #f4e4a6;">{score} / {total}</h1>
+<div style="text-align: center; padding: 20px; background: rgba(59, 130, 246, 0.15); border-radius: 15px; margin: 15px 0;">
+    <h1 style="font-size: 42px; margin: 0; color: #3b82f6;">{score} / {total}</h1>
     <p style="font-size: 16px; color: #888;">{total}개 중 {score}개 정답!</p>
 </div>
 
@@ -303,12 +381,15 @@ with chat_container:
         with st.expander("📋 상세 결과 보기"):
             for i, answer in enumerate(st.session_state.answers):
                 icon = "✅" if answer["is_correct"] else "❌"
+                user_q = answer.get("user_question", "")
+                user_q_display = f"\n- 💬 내 질문: {user_q}" if user_q else ""
+
                 st.markdown(f"""
 **{i + 1}. {answer['artifact']}** {icon}
 
 - 문제: {answer['question']}
 - 내 답: {answer['user_answer']}
-- 정답: {answer['correct_answer']}
+- 정답: {answer['correct_answer']}{user_q_display}
 - 해설: {answer['explanation']}
 
 ---

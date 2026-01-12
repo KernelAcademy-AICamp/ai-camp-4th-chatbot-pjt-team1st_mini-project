@@ -131,3 +131,60 @@ class LLMService:
             "correct_index": 0,
             "explanation": f"이 유물은 {artifact['period']}에 만들어졌습니다."
         }
+
+    def generate_enhanced_explanation(
+        self,
+        artifact: dict,
+        quiz: dict,
+        is_correct: bool,
+        user_question: str = None
+    ) -> str:
+        """사용자 질문을 반영한 맞춤 해설 생성"""
+
+        base_explanation = quiz.get("explanation", "")
+
+        # 사용자 질문이 없으면 기본 해설 반환
+        if not user_question or not user_question.strip():
+            return base_explanation
+
+        # API 클라이언트가 있으면 맞춤 해설 생성
+        if self.client:
+            try:
+                prompt = f"""당신은 박물관 큐레이터입니다.
+사용자가 유물 퀴즈를 풀면서 궁금한 점을 질문했습니다.
+
+**유물 정보:**
+- 이름: {artifact.get('name', '')}
+- 시대: {artifact.get('period', '')}
+- 지정: {artifact.get('designation', '')}
+- 설명: {artifact.get('description', '')}
+
+**퀴즈 문제:** {quiz.get('question', '')}
+**정답 여부:** {'정답' if is_correct else '오답'}
+**기본 해설:** {base_explanation}
+
+**사용자의 궁금한 점:** {user_question}
+
+위 정보를 바탕으로:
+1. 먼저 기본 해설을 제공하고
+2. 사용자의 궁금한 점에 친절하게 답변해주세요
+3. 추가로 흥미로운 정보가 있다면 알려주세요
+
+응답은 300자 이내로 간결하게 작성해주세요."""
+
+                response = self.client.messages.create(
+                    model=AI_CONFIG["model"],
+                    max_tokens=500,
+                    messages=[
+                        {"role": "user", "content": prompt}
+                    ]
+                )
+                return response.content[0].text
+            except Exception as e:
+                print(f"맞춤 해설 생성 오류: {e}")
+
+        # API 없으면 기본 해설 + 안내 메시지
+        return f"""{base_explanation}
+
+💬 **질문하신 내용:** {user_question}
+→ API 키를 설정하면 궁금한 점에 대한 맞춤 답변을 받을 수 있어요!"""
