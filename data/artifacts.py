@@ -3,10 +3,45 @@
 ==============================
 
 유물 정보를 추가/수정하는 파일입니다.
+국립중앙박물관 API 연동 또는 하드코딩 데이터 사용
 """
 
+import os
+import random
+
+
 # ============================================================
-# 📜 유물 데이터베이스 (15개)
+# 🌐 API에서 유물 가져오기
+# ============================================================
+
+def fetch_artifacts_from_api(count: int = 10) -> list:
+    """
+    국립중앙박물관 API에서 유물 목록 가져오기
+
+    Returns:
+        list: 유물 목록 (API 실패 시 빈 리스트)
+    """
+    try:
+        from services.museum_api import get_museum_service
+
+        service = get_museum_service()
+        if not service.service_key:
+            print("⚠️ MUSEUM_API_KEY가 없어서 기본 데이터를 사용합니다.")
+            return []
+
+        artifacts = service.get_random_artifacts(count=count)
+        if artifacts:
+            print(f"✅ API에서 {len(artifacts)}개 유물 로드 완료")
+            return artifacts
+
+    except Exception as e:
+        print(f"⚠️ API 로드 실패: {e}")
+
+    return []
+
+
+# ============================================================
+# 📜 하드코딩된 유물 데이터베이스 (15개) - 폴백용
 # ============================================================
 
 ARTIFACTS = {
@@ -281,9 +316,117 @@ def get_artifact_by_id(artifact_id: str) -> dict | None:
     return None
 
 
-def get_random_artifacts(count: int = 10) -> list:
-    """랜덤으로 유물을 선택합니다."""
-    import random
+def get_random_artifacts(count: int = 10, use_api: bool = True) -> list:
+    """
+    랜덤으로 유물을 선택합니다.
+
+    Parameters:
+        count: 가져올 유물 개수
+        use_api: API 사용 여부 (기본 True)
+
+    Returns:
+        list: 유물 목록
+    """
+    # API에서 가져오기 시도
+    if use_api:
+        api_artifacts = fetch_artifacts_from_api(count=count)
+        if api_artifacts:
+            # API 유물에 퀴즈 생성
+            return _add_quizzes_to_artifacts(api_artifacts)
+
+    # 폴백: 하드코딩된 데이터 사용
+    print("📚 기본 유물 데이터를 사용합니다.")
     keys = list(ARTIFACTS.keys())
     selected = random.sample(keys, min(count, len(keys)))
     return [ARTIFACTS[key] for key in selected]
+
+
+def _add_quizzes_to_artifacts(artifacts: list) -> list:
+    """
+    API에서 가져온 유물에 퀴즈 추가
+
+    Gemini API로 퀴즈를 생성하거나 기본 퀴즈 사용
+    """
+    for artifact in artifacts:
+        if artifact.get("quiz") is None:
+            artifact["quiz"] = _generate_quiz_for_artifact(artifact)
+    return artifacts
+
+
+def _generate_quiz_for_artifact(artifact: dict) -> dict:
+    """
+    유물에 대한 퀴즈 생성
+
+    Gemini API 사용 가능하면 AI 생성, 아니면 기본 퀴즈
+    """
+    try:
+        from services.llm_service import LLMService
+        import os
+
+        api_key = os.getenv("GEMINI_API_KEY", "")
+        if api_key:
+            llm = LLMService(api_key)
+            if llm.model:
+                return _generate_quiz_with_gemini(llm, artifact)
+    except Exception as e:
+        print(f"퀴즈 생성 오류: {e}")
+
+    # 기본 퀴즈
+    return _create_default_quiz(artifact)
+
+
+def _generate_quiz_with_gemini(llm, artifact: dict) -> dict:
+    """Gemini API로 퀴즈 생성"""
+    import json
+    import re
+
+    prompt = f"""다음 유물에 대한 4지선다 퀴즈를 만들어주세요.
+
+유물 정보:
+- 이름: {artifact.get('name', '알 수 없음')}
+- 시대: {artifact.get('period', '시대 미상')}
+- 재질: {artifact.get('material', '')}
+- 설명: {artifact.get('description', '')}
+
+다음 JSON 형식으로 정확히 응답해주세요:
+{{
+    "question": "퀴즈 질문",
+    "options": ["선택지1", "선택지2", "선택지3", "선택지4"],
+    "answer": 0,
+    "explanation": "정답 해설"
+}}
+
+주의:
+- answer는 정답의 인덱스 (0-3)
+- 질문은 유물의 특징이나 역사적 의의에 관한 것
+- 선택지는 비슷해 보이지만 명확히 구분되어야 함
+"""
+
+    try:
+        response = llm.model.generate_content(prompt)
+        response_text = response.text
+
+        # JSON 추출
+        json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+        if json_match:
+            quiz = json.loads(json_match.group())
+            # 필수 필드 확인
+            if all(k in quiz for k in ["question", "options", "answer", "explanation"]):
+                return quiz
+    except Exception as e:
+        print(f"Gemini 퀴즈 생성 실패: {e}")
+
+    return _create_default_quiz(artifact)
+
+
+def _create_default_quiz(artifact: dict) -> dict:
+    """기본 퀴즈 생성"""
+    name = artifact.get('name', '이 유물')
+    period = artifact.get('period', '시대 미상')
+
+    return {
+        "question": f"'{name}'은(는) 어느 시대의 유물일까요?",
+        "options": ["삼국시대", "고려시대", "조선시대", "근현대"],
+        "answer": 0,
+        "explanation": f"이 유물은 {period}에 제작된 것으로 알려져 있습니다."
+    }
