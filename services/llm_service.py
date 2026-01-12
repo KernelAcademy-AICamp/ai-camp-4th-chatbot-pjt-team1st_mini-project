@@ -29,7 +29,7 @@ class LLMService:
             try:
                 import google.generativeai as genai
                 genai.configure(api_key=api_key)
-                self.model = genai.GenerativeModel('gemini-1.5-flash')
+                self.model = genai.GenerativeModel('gemini-2.0-flash')
                 self.client = True  # 클라이언트 활성화 표시
                 print("✅ Gemini API 연결됨")
             except ImportError:
