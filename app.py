@@ -64,6 +64,16 @@ if "llm_service" not in st.session_state:
     # 환경변수에서 API 키 로드
     api_key = os.getenv("ANTHROPIC_API_KEY", "")
     st.session_state.llm_service = LLMService(api_key)
+    if api_key:
+        print(f"✅ API 키 로드됨: {api_key[:20]}...")
+    else:
+        print("⚠️ API 키가 없습니다")
+
+# API 키가 있는데 client가 없으면 다시 초기화
+api_key = os.getenv("ANTHROPIC_API_KEY", "")
+if api_key and not st.session_state.llm_service.client:
+    st.session_state.llm_service = LLMService(api_key)
+    print("🔄 LLM 서비스 재초기화")
 
 if "user_question" not in st.session_state:
     st.session_state.user_question = ""
