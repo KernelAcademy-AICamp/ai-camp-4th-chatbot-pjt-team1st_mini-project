@@ -448,3 +448,72 @@ def _create_default_quiz(artifact: dict) -> dict:
         "answer": 0,
         "explanation": f"이 유물은 {period}에 제작된 것으로 알려져 있습니다."
     }
+
+
+# ============================================================
+# 🎯 동적 퀴즈 생성 (외부 호출용)
+# ============================================================
+
+def generate_dynamic_quiz(artifact: dict, llm_service=None) -> dict:
+    """
+    유물 정보를 바탕으로 동적으로 퀴즈 생성
+
+    Parameters:
+        artifact: 유물 정보 dict
+        llm_service: LLMService 인스턴스 (선택)
+
+    Returns:
+        dict: 퀴즈 정보 (question, options, answer, explanation)
+    """
+    # LLM 서비스가 있으면 동적 생성 시도
+    if llm_service and llm_service.model:
+        try:
+            import json
+            import re
+
+            prompt = f"""다음 유물 정보를 바탕으로 4지선다 퀴즈를 만들어주세요.
+
+유물 정보:
+- 이름: {artifact.get('name', '알 수 없음')}
+- 시대: {artifact.get('period', '시대 미상')}
+- 재질: {artifact.get('material', '')}
+- 지정: {artifact.get('designation', '')}
+- 전시실: {artifact.get('gallery', '')}
+- 설명: {artifact.get('description', '')}
+
+다음 JSON 형식으로 정확히 응답해주세요:
+{{
+    "question": "퀴즈 질문",
+    "options": ["선택지1", "선택지2", "선택지3", "선택지4"],
+    "answer": 0,
+    "explanation": "정답 해설 (2-3문장)"
+}}
+
+규칙:
+- answer는 정답의 인덱스 (0-3)
+- 유물의 특징, 시대, 재질, 역사적 의의 등에 관한 문제
+- 선택지는 그럴듯하지만 명확히 구분되어야 함
+- 설명(description)에 있는 내용을 활용하여 문제 출제
+- 기존 하드코딩 퀴즈와 다른 새로운 질문으로 생성
+"""
+
+            response = llm_service.model.generate_content(prompt)
+            response_text = response.text
+
+            # JSON 추출
+            json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+            if json_match:
+                quiz = json.loads(json_match.group())
+                if all(k in quiz for k in ["question", "options", "answer", "explanation"]):
+                    print(f"✅ 동적 퀴즈 생성: {artifact.get('name')}")
+                    return quiz
+
+        except Exception as e:
+            print(f"⚠️ 동적 퀴즈 생성 실패: {e}")
+
+    # 폴백: 하드코딩된 퀴즈 또는 기본 퀴즈
+    if artifact.get("quiz"):
+        print(f"📝 기존 퀴즈 사용: {artifact.get('name')}")
+        return artifact["quiz"]
+
+    return _create_default_quiz(artifact)

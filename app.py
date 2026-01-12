@@ -15,7 +15,7 @@ import streamlit as st
 
 from config.styles import generate_css, get_header_html
 from config.settings import APP_CONFIG
-from data.artifacts import ARTIFACTS, get_random_artifacts
+from data.artifacts import ARTIFACTS, get_random_artifacts, generate_dynamic_quiz
 from services.llm_service import LLMService
 
 
@@ -83,6 +83,9 @@ if "selected_ids" not in st.session_state:
 
 if "selected_answer" not in st.session_state:
     st.session_state.selected_answer = None
+
+if "generated_quizzes" not in st.session_state:
+    st.session_state.generated_quizzes = {}
 
 
 # ============================================================
@@ -238,6 +241,14 @@ with chat_container:
                 add_message("user", f"**{select_count}개의 유물을 선택했습니다:**\n{artifact_names}")
                 add_message("assistant", f"좋아요! {select_count}개의 유물에 대한 퀴즈를 시작할게요. 준비되셨나요? 🎯")
 
+                # 🎯 동적 퀴즈 생성 (Gemini API 사용)
+                llm = st.session_state.llm_service
+                generated_quizzes = {}
+                for artifact in selected:
+                    quiz = generate_dynamic_quiz(artifact, llm)
+                    generated_quizzes[artifact['id']] = quiz
+
+                st.session_state.generated_quizzes = generated_quizzes
                 st.session_state.selected_artifacts = selected
                 st.session_state.current_quiz_index = 0
                 st.session_state.score = 0
@@ -257,7 +268,10 @@ with chat_container:
 
         if current < total:
             artifact = st.session_state.selected_artifacts[current]
-            quiz = artifact["quiz"]
+            # 동적 생성된 퀴즈 사용 (없으면 기존 퀴즈)
+            quiz = st.session_state.get("generated_quizzes", {}).get(
+                artifact['id'], artifact.get("quiz", {})
+            )
 
             # 현재 문제를 채팅 형식으로 표시
             with st.chat_message("assistant", avatar="🏛️"):
