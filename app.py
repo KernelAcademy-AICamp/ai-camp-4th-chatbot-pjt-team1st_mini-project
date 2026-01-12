@@ -81,6 +81,9 @@ if "user_question" not in st.session_state:
 if "selected_ids" not in st.session_state:
     st.session_state.selected_ids = set()
 
+if "selected_answer" not in st.session_state:
+    st.session_state.selected_answer = None
+
 
 # ============================================================
 # 🔧 유틸리티 함수
@@ -288,23 +291,31 @@ with chat_container:
             st.markdown("---")
             st.markdown("### 정답을 선택하세요:")
 
-            # 라디오 버튼으로 선택지 표시
-            options_with_numbers = [f"{i + 1}. {opt}" for i, opt in enumerate(quiz["options"])]
-            selected_option = st.radio(
-                "선택지",
-                options=options_with_numbers,
-                index=None,
-                key=f"quiz_radio_{current}",
-                label_visibility="collapsed"
-            )
+            # 버튼 스타일 선택지 표시
+            for i, option in enumerate(quiz["options"]):
+                is_selected = st.session_state.selected_answer == i
+
+                # 선택된 상태 표시 (체크 아이콘 + primary 스타일)
+                btn_label = f"{'✓ ' if is_selected else ''}{i + 1}. {option}"
+                btn_type = "primary" if is_selected else "secondary"
+
+                if st.button(
+                    btn_label,
+                    key=f"option_{current}_{i}",
+                    use_container_width=True,
+                    type=btn_type
+                ):
+                    st.session_state.selected_answer = i
+                    st.rerun()
 
             # 제출 버튼
+            st.markdown("---")
             col1, col2, col3 = st.columns([1, 2, 1])
             with col2:
-                submit_disabled = selected_option is None
+                submit_disabled = st.session_state.selected_answer is None
                 if st.button("✅ 정답 제출", key=f"submit_{current}", use_container_width=True, disabled=submit_disabled):
                     # 선택한 답 인덱스 추출
-                    selected_index = options_with_numbers.index(selected_option)
+                    selected_index = st.session_state.selected_answer
                     selected_answer = quiz["options"][selected_index]
 
                     # 정답 체크
@@ -356,6 +367,7 @@ with chat_container:
                     })
 
                     st.session_state.current_quiz_index += 1
+                    st.session_state.selected_answer = None  # 다음 문제를 위해 선택 초기화
                     st.rerun()
 
         else:

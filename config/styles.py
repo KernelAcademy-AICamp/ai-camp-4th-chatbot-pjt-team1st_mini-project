@@ -260,6 +260,28 @@ def generate_css() -> str:
             transform: translateY(-1px);
         }}
 
+        /* Secondary 버튼 (퀴즈 선택지) */
+        .stButton > button[kind="secondary"] {{
+            background: rgba(248, 250, 252, 0.95) !important;
+            border: 2px solid rgba(59, 130, 246, 0.25) !important;
+            color: {COLORS["text"]} !important;
+        }}
+
+        .stButton > button[kind="secondary"]:hover {{
+            background: rgba(59, 130, 246, 0.08) !important;
+            border-color: rgba(59, 130, 246, 0.5) !important;
+            transform: translateX(4px) !important;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15) !important;
+        }}
+
+        /* Primary 버튼 (선택된 퀴즈 선택지) */
+        .stButton > button[kind="primary"] {{
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1)) !important;
+            border: 2px solid {COLORS["primary"]} !important;
+            color: {COLORS["primary_dark"]} !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+        }}
+
         /* 파일 업로더 */
         .stFileUploader {{
             background: rgba(59, 130, 246, 0.05);
@@ -435,6 +457,71 @@ def generate_css() -> str:
         .stError {{
             background: rgba(248, 113, 113, 0.1) !important;
             border: 1px solid rgba(248, 113, 113, 0.3) !important;
+        }}
+
+        /* 퀴즈 선택지 버튼 스타일 */
+        .quiz-option {{
+            background: rgba(248, 250, 252, 0.95) !important;
+            border: 2px solid rgba(59, 130, 246, 0.2) !important;
+            border-radius: 12px !important;
+            padding: 16px 20px !important;
+            margin: 8px 0 !important;
+            font-size: 15px !important;
+            font-weight: 500 !important;
+            color: {COLORS["text"]} !important;
+            transition: all 0.2s ease !important;
+            text-align: left !important;
+        }}
+
+        .quiz-option:hover {{
+            background: rgba(59, 130, 246, 0.08) !important;
+            border-color: rgba(59, 130, 246, 0.5) !important;
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }}
+
+        .quiz-option-selected {{
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08)) !important;
+            border: 2px solid {COLORS["primary"]} !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 4px 12px rgba(59, 130, 246, 0.2) !important;
+        }}
+
+        /* 라디오 버튼 숨기기 */
+        .stRadio > div {{
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }}
+
+        .stRadio label {{
+            background: rgba(248, 250, 252, 0.95) !important;
+            border: 2px solid rgba(59, 130, 246, 0.2) !important;
+            border-radius: 12px !important;
+            padding: 14px 18px !important;
+            margin: 0 !important;
+            font-size: 15px !important;
+            color: {COLORS["text"]} !important;
+            transition: all 0.2s ease !important;
+            cursor: pointer !important;
+        }}
+
+        .stRadio label:hover {{
+            background: rgba(59, 130, 246, 0.08) !important;
+            border-color: rgba(59, 130, 246, 0.5) !important;
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }}
+
+        .stRadio label[data-checked="true"],
+        .stRadio div[role="radiogroup"] label:has(input:checked) {{
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08)) !important;
+            border: 2px solid {COLORS["primary"]} !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 4px 12px rgba(59, 130, 246, 0.2) !important;
+        }}
+
+        /* 라디오 버튼 동그라미 숨기기 */
+        .stRadio [data-testid="stMarkdownContainer"] {{
+            width: 100%;
         }}
     </style>
     """
