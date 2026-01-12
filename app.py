@@ -148,8 +148,11 @@ with st.sidebar:
     elif st.session_state.stage == "quiz":
         total = len(st.session_state.selected_artifacts)
         current = st.session_state.current_quiz_index
-        st.markdown(f"🎯 퀴즈 진행 중: {current + 1} / {total}")
-        st.progress((current + 1) / total)
+        if total > 0:
+            st.markdown(f"🎯 퀴즈 진행 중: {current + 1} / {total}")
+            st.progress(min((current + 1) / total, 1.0))
+        else:
+            st.markdown("🎯 퀴즈 준비 중...")
     elif st.session_state.stage == "result":
         st.markdown(f"🏆 완료! 점수: {st.session_state.score}/{len(st.session_state.selected_artifacts)}")
 
