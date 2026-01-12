@@ -5,6 +5,12 @@
 실행: streamlit run app.py
 """
 
+import os
+from dotenv import load_dotenv
+
+# .env 파일 로드
+load_dotenv()
+
 import streamlit as st
 
 from config.styles import generate_css, get_header_html
@@ -55,7 +61,6 @@ if "quiz_started" not in st.session_state:
     st.session_state.quiz_started = False
 
 if "llm_service" not in st.session_state:
-    import os
     # 환경변수에서 API 키 로드
     api_key = os.getenv("ANTHROPIC_API_KEY", "")
     st.session_state.llm_service = LLMService(api_key)
