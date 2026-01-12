@@ -87,6 +87,9 @@ if "selected_answer" not in st.session_state:
 if "generated_quizzes" not in st.session_state:
     st.session_state.generated_quizzes = {}
 
+if "quiz_generating" not in st.session_state:
+    st.session_state.quiz_generating = False
+
 
 # ============================================================
 # 🔧 유틸리티 함수
@@ -235,26 +238,45 @@ with chat_container:
         # 시작 버튼
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            if st.button("🎯 퀴즈 시작!", use_container_width=True, disabled=(select_count < 3 or select_count > 10)):
+            # 퀴즈 생성 중이면 버튼 비활성화
+            is_generating = st.session_state.quiz_generating
+            button_disabled = (select_count < 3 or select_count > 10 or is_generating)
+            button_label = "⏳ 퀴즈 생성 중..." if is_generating else "🎯 퀴즈 시작!"
+
+            if st.button(button_label, use_container_width=True, disabled=button_disabled):
+                # 중복 클릭 방지
+                st.session_state.quiz_generating = True
+
+                # 선택된 유물 저장 (먼저!)
+                st.session_state.selected_artifacts = selected
+
                 # 선택 메시지 추가
                 artifact_names = ", ".join([a["name"] for a in selected])
                 add_message("user", f"**{select_count}개의 유물을 선택했습니다:**\n{artifact_names}")
-                add_message("assistant", f"좋아요! {select_count}개의 유물에 대한 퀴즈를 시작할게요. 준비되셨나요? 🎯")
+                add_message("assistant", f"좋아요! {select_count}개의 유물에 대한 퀴즈를 생성할게요. 잠시만 기다려주세요... ⏳")
 
-                # 🎯 동적 퀴즈 생성 (Gemini API 사용)
+                st.rerun()  # 로딩 상태 표시를 위해 먼저 rerun
+
+        # 퀴즈 생성 처리 (버튼 클릭 후 별도로 처리)
+        if st.session_state.quiz_generating and st.session_state.stage == "select":
+            with st.spinner("🤖 AI가 퀴즈를 생성하고 있어요..."):
                 llm = st.session_state.llm_service
                 generated_quizzes = {}
-                for artifact in selected:
+
+                for artifact in st.session_state.selected_artifacts:
                     quiz = generate_dynamic_quiz(artifact, llm)
                     generated_quizzes[artifact['id']] = quiz
 
                 st.session_state.generated_quizzes = generated_quizzes
-                st.session_state.selected_artifacts = selected
                 st.session_state.current_quiz_index = 0
                 st.session_state.score = 0
                 st.session_state.answers = []
                 st.session_state.stage = "quiz"
                 st.session_state.quiz_started = True
+                st.session_state.quiz_generating = False  # 생성 완료
+
+                # 시작 메시지 업데이트
+                st.session_state.chat_history[-1]["content"] = "좋아요! 퀴즈를 시작할게요. 준비되셨나요? 🎯"
                 st.rerun()
 
 
