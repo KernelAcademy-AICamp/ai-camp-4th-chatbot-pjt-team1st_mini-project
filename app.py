@@ -288,62 +288,75 @@ with chat_container:
             st.markdown("---")
             st.markdown("### 정답을 선택하세요:")
 
-            # 선택지 버튼
-            cols = st.columns(2)
-            for i, option in enumerate(quiz["options"]):
-                col = cols[i % 2]
-                with col:
-                    if st.button(f"{i + 1}. {option}", key=f"option_{current}_{i}", use_container_width=True):
-                        # 정답 체크
-                        is_correct = (i == quiz["answer"])
+            # 라디오 버튼으로 선택지 표시
+            options_with_numbers = [f"{i + 1}. {opt}" for i, opt in enumerate(quiz["options"])]
+            selected_option = st.radio(
+                "선택지",
+                options=options_with_numbers,
+                index=None,
+                key=f"quiz_radio_{current}",
+                label_visibility="collapsed"
+            )
 
-                        if is_correct:
-                            st.session_state.score += 1
+            # 제출 버튼
+            col1, col2, col3 = st.columns([1, 2, 1])
+            with col2:
+                submit_disabled = selected_option is None
+                if st.button("✅ 정답 제출", key=f"submit_{current}", use_container_width=True, disabled=submit_disabled):
+                    # 선택한 답 인덱스 추출
+                    selected_index = options_with_numbers.index(selected_option)
+                    selected_answer = quiz["options"][selected_index]
 
-                        # 사용자 답변 메시지 추가
-                        user_msg = f"**{i + 1}번:** {option}"
-                        if user_question and user_question.strip():
-                            user_msg += f"\n\n💬 **궁금한 점:** {user_question}"
-                        add_message("user", user_msg)
+                    # 정답 체크
+                    is_correct = (selected_index == quiz["answer"])
 
-                        # 맞춤 해설 생성 (LLM 사용)
-                        enhanced_explanation = st.session_state.llm_service.generate_enhanced_explanation(
-                            artifact=artifact,
-                            quiz=quiz,
-                            is_correct=is_correct,
-                            user_question=user_question
-                        )
+                    if is_correct:
+                        st.session_state.score += 1
 
-                        # 결과 메시지 추가
-                        if is_correct:
-                            result_msg = f"""
+                    # 사용자 답변 메시지 추가
+                    user_msg = f"**{selected_index + 1}번:** {selected_answer}"
+                    if user_question and user_question.strip():
+                        user_msg += f"\n\n💬 **궁금한 점:** {user_question}"
+                    add_message("user", user_msg)
+
+                    # 맞춤 해설 생성 (LLM 사용)
+                    enhanced_explanation = st.session_state.llm_service.generate_enhanced_explanation(
+                        artifact=artifact,
+                        quiz=quiz,
+                        is_correct=is_correct,
+                        user_question=user_question
+                    )
+
+                    # 결과 메시지 추가
+                    if is_correct:
+                        result_msg = f"""
 ✅ **정답입니다!**
 
 {enhanced_explanation}
-                            """
-                        else:
-                            result_msg = f"""
+                        """
+                    else:
+                        result_msg = f"""
 ❌ **아쉽네요!**
 
 정답은 **{quiz['options'][quiz['answer']]}** 입니다.
 
 {enhanced_explanation}
-                            """
+                        """
 
-                        add_message("assistant", result_msg)
+                    add_message("assistant", result_msg)
 
-                        st.session_state.answers.append({
-                            "artifact": artifact["name"],
-                            "question": quiz["question"],
-                            "user_answer": option,
-                            "correct_answer": quiz["options"][quiz["answer"]],
-                            "is_correct": is_correct,
-                            "user_question": user_question,
-                            "explanation": enhanced_explanation
-                        })
+                    st.session_state.answers.append({
+                        "artifact": artifact["name"],
+                        "question": quiz["question"],
+                        "user_answer": selected_answer,
+                        "correct_answer": quiz["options"][quiz["answer"]],
+                        "is_correct": is_correct,
+                        "user_question": user_question,
+                        "explanation": enhanced_explanation
+                    })
 
-                        st.session_state.current_quiz_index += 1
-                        st.rerun()
+                    st.session_state.current_quiz_index += 1
+                    st.rerun()
 
         else:
             # 모든 퀴즈 완료 -> 결과 화면으로
