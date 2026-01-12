@@ -78,10 +78,21 @@ if api_key and not st.session_state.llm_service.client:
 if "user_question" not in st.session_state:
     st.session_state.user_question = ""
 
+if "selected_ids" not in st.session_state:
+    st.session_state.selected_ids = set()
+
 
 # ============================================================
 # 🔧 유틸리티 함수
 # ============================================================
+
+def toggle_artifact_selection(artifact_id: str):
+    """유물 선택 토글"""
+    if artifact_id in st.session_state.selected_ids:
+        st.session_state.selected_ids.remove(artifact_id)
+    else:
+        st.session_state.selected_ids.add(artifact_id)
+
 
 def add_message(role: str, content: str):
     """채팅 히스토리에 메시지 추가"""
@@ -180,31 +191,28 @@ with chat_container:
                 """)
 
         st.markdown("---")
-        st.markdown("### 📜 유물 선택")
+        st.markdown("### 📜 유물 선택 (클릭하여 선택/해제)")
 
-        # 체크박스로 유물 선택
-        selected = []
+        # 카드 클릭으로 유물 선택
+        cols = st.columns(2)
+        for i, artifact in enumerate(st.session_state.available_artifacts):
+            col = cols[i % 2]
+            with col:
+                is_selected = artifact['id'] in st.session_state.selected_ids
+                selected_class = "selected" if is_selected else ""
+                selected_icon = "✅ " if is_selected else ""
 
-        for artifact in st.session_state.available_artifacts:
-            col1, col2 = st.columns([0.05, 0.95])
-            with col1:
-                is_checked = st.checkbox(
-                    "",
-                    key=f"select_{artifact['id']}",
-                    label_visibility="collapsed"
-                )
-            with col2:
-                # 커스텀 카드 스타일
-                selected_class = "selected" if is_checked else ""
-                st.markdown(f"""
-                <div class="artifact-card {selected_class}">
-                    <h4>{artifact['name']}</h4>
-                    <p>{artifact['period']} | {artifact['designation']}</p>
-                </div>
-                """, unsafe_allow_html=True)
+                if st.button(
+                    f"{selected_icon}{artifact['name']}\n{artifact['period']}",
+                    key=f"card_{artifact['id']}",
+                    use_container_width=True,
+                    type="primary" if is_selected else "secondary"
+                ):
+                    toggle_artifact_selection(artifact['id'])
+                    st.rerun()
 
-            if is_checked:
-                selected.append(artifact)
+        # 선택된 유물 리스트 생성
+        selected = [a for a in st.session_state.available_artifacts if a['id'] in st.session_state.selected_ids]
 
         st.markdown("---")
 
@@ -406,6 +414,7 @@ with chat_container:
                 st.session_state.stage = "select"
                 st.session_state.available_artifacts = get_random_artifacts(10)
                 st.session_state.selected_artifacts = []
+                st.session_state.selected_ids = set()
                 st.session_state.current_quiz_index = 0
                 st.session_state.score = 0
                 st.session_state.answers = []
