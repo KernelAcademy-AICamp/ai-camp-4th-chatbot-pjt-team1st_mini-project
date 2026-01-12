@@ -15,7 +15,7 @@ import streamlit as st
 
 from config.styles import generate_css, get_header_html
 from config.settings import APP_CONFIG
-from data.artifacts import ARTIFACTS, get_random_artifacts
+from data.artifacts import ARTIFACTS, get_random_artifacts, generate_dynamic_quiz
 from services.llm_service import LLMService
 
 
@@ -83,6 +83,12 @@ if "selected_ids" not in st.session_state:
 
 if "selected_answer" not in st.session_state:
     st.session_state.selected_answer = None
+
+if "generated_quizzes" not in st.session_state:
+    st.session_state.generated_quizzes = {}
+
+if "quiz_generating" not in st.session_state:
+    st.session_state.quiz_generating = False
 
 
 # ============================================================
@@ -196,23 +202,81 @@ with chat_container:
         st.markdown("---")
         st.markdown("### 📜 유물 선택 (클릭하여 선택/해제)")
 
-        # 카드 클릭으로 유물 선택
-        cols = st.columns(2)
+        # 카드 리스트 형태로 유물 표시
         for i, artifact in enumerate(st.session_state.available_artifacts):
-            col = cols[i % 2]
-            with col:
-                is_selected = artifact['id'] in st.session_state.selected_ids
-                selected_class = "selected" if is_selected else ""
-                selected_icon = "✅ " if is_selected else ""
+            is_selected = artifact['id'] in st.session_state.selected_ids
 
+            # 카드 스타일 컨테이너
+            card_bg = "rgba(59, 130, 246, 0.1)" if is_selected else "rgba(248, 250, 252, 0.95)"
+            card_border = "2px solid #3B82F6" if is_selected else "1px solid #E2E8F0"
+
+            col1, col2, col3 = st.columns([1, 4, 1])
+
+            with col1:
+                # 왼쪽: 이미지 영역
+                image_url = artifact.get('image_url', '')
+                if image_url:
+                    try:
+                        st.image(image_url, width=70)
+                    except Exception:
+                        st.markdown(f"""
+                        <div style="
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            border-radius: 8px;
+                            padding: 15px;
+                            text-align: center;
+                            color: white;
+                            font-size: 24px;
+                            height: 70px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        ">🏛️</div>
+                        """, unsafe_allow_html=True)
+                else:
+                    st.markdown(f"""
+                    <div style="
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        border-radius: 8px;
+                        padding: 15px;
+                        text-align: center;
+                        color: white;
+                        font-size: 24px;
+                        height: 70px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    ">🏛️</div>
+                    """, unsafe_allow_html=True)
+
+            with col2:
+                # 가운데: 유물 정보
+                st.markdown(f"""
+                <div style="padding: 5px 0;">
+                    <div style="font-weight: 600; font-size: 16px; color: #1E293B;">
+                        {'✅ ' if is_selected else ''}{artifact['name']}
+                    </div>
+                    <div style="font-size: 13px; color: #64748B; margin-top: 4px;">
+                        📍 {artifact.get('gallery', '국립중앙박물관')}
+                    </div>
+                    <div style="font-size: 12px; color: #94A3B8; margin-top: 2px;">
+                        {artifact.get('designation', '')} · {artifact['period']}
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            with col3:
+                # 오른쪽: 선택 버튼
                 if st.button(
-                    f"{selected_icon}{artifact['name']}\n{artifact['period']}",
-                    key=f"card_{artifact['id']}",
-                    use_container_width=True,
+                    "✓" if is_selected else "○",
+                    key=f"select_{artifact['id']}",
                     type="primary" if is_selected else "secondary"
                 ):
                     toggle_artifact_selection(artifact['id'])
                     st.rerun()
+
+            # 구분선
+            st.markdown("<hr style='margin: 8px 0; border: none; border-top: 1px solid #E2E8F0;'>", unsafe_allow_html=True)
 
         # 선택된 유물 리스트 생성
         selected = [a for a in st.session_state.available_artifacts if a['id'] in st.session_state.selected_ids]
@@ -232,18 +296,45 @@ with chat_container:
         # 시작 버튼
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            if st.button("🎯 퀴즈 시작!", use_container_width=True, disabled=(select_count < 3 or select_count > 10)):
+            # 퀴즈 생성 중이면 버튼 비활성화
+            is_generating = st.session_state.quiz_generating
+            button_disabled = (select_count < 3 or select_count > 10 or is_generating)
+            button_label = "⏳ 퀴즈 생성 중..." if is_generating else "🎯 퀴즈 시작!"
+
+            if st.button(button_label, use_container_width=True, disabled=button_disabled):
+                # 중복 클릭 방지
+                st.session_state.quiz_generating = True
+
+                # 선택된 유물 저장 (먼저!)
+                st.session_state.selected_artifacts = selected
+
                 # 선택 메시지 추가
                 artifact_names = ", ".join([a["name"] for a in selected])
                 add_message("user", f"**{select_count}개의 유물을 선택했습니다:**\n{artifact_names}")
-                add_message("assistant", f"좋아요! {select_count}개의 유물에 대한 퀴즈를 시작할게요. 준비되셨나요? 🎯")
+                add_message("assistant", f"좋아요! {select_count}개의 유물에 대한 퀴즈를 생성할게요. 잠시만 기다려주세요... ⏳")
 
-                st.session_state.selected_artifacts = selected
+                st.rerun()  # 로딩 상태 표시를 위해 먼저 rerun
+
+        # 퀴즈 생성 처리 (버튼 클릭 후 별도로 처리)
+        if st.session_state.quiz_generating and st.session_state.stage == "select":
+            with st.spinner("🤖 AI가 퀴즈를 생성하고 있어요..."):
+                llm = st.session_state.llm_service
+                generated_quizzes = {}
+
+                for artifact in st.session_state.selected_artifacts:
+                    quiz = generate_dynamic_quiz(artifact, llm)
+                    generated_quizzes[artifact['id']] = quiz
+
+                st.session_state.generated_quizzes = generated_quizzes
                 st.session_state.current_quiz_index = 0
                 st.session_state.score = 0
                 st.session_state.answers = []
                 st.session_state.stage = "quiz"
                 st.session_state.quiz_started = True
+                st.session_state.quiz_generating = False  # 생성 완료
+
+                # 시작 메시지 업데이트
+                st.session_state.chat_history[-1]["content"] = "좋아요! 퀴즈를 시작할게요. 준비되셨나요? 🎯"
                 st.rerun()
 
 
@@ -257,7 +348,10 @@ with chat_container:
 
         if current < total:
             artifact = st.session_state.selected_artifacts[current]
-            quiz = artifact["quiz"]
+            # 동적 생성된 퀴즈 사용 (없으면 기존 퀴즈)
+            quiz = st.session_state.get("generated_quizzes", {}).get(
+                artifact['id'], artifact.get("quiz", {})
+            )
 
             # 현재 문제를 채팅 형식으로 표시
             with st.chat_message("assistant", avatar="🏛️"):
