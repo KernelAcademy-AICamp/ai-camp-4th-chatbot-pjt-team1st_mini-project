@@ -316,25 +316,25 @@ def get_artifact_by_id(artifact_id: str) -> dict | None:
     return None
 
 
-def get_random_artifacts(count: int = 10, use_api: bool = True) -> list:
+def get_random_artifacts(count: int = 10, use_api: bool = False) -> list:
     """
     랜덤으로 유물을 선택합니다.
 
     Parameters:
         count: 가져올 유물 개수
-        use_api: API 사용 여부 (기본 True)
+        use_api: API 사용 여부 (기본 False - JSON 데이터 사용)
 
     Returns:
         list: 유물 목록
     """
-    # API에서 가져오기 시도
+    # API에서 가져오기 시도 (비활성화됨)
     if use_api:
         api_artifacts = fetch_artifacts_from_api(count=count)
         if api_artifacts:
             # API 유물에 퀴즈 생성
             return _add_quizzes_to_artifacts(api_artifacts)
 
-    # 폴백: 하드코딩된 데이터 사용
+    # 기본: 하드코딩된 데이터 사용
     print("📚 기본 유물 데이터를 사용합니다.")
     keys = list(ARTIFACTS.keys())
     selected = random.sample(keys, min(count, len(keys)))
