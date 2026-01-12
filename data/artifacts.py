@@ -53,6 +53,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "사유의 방 (2층)",
         "designation": "국보 제78호",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Pensive_Bodhisattva_01.jpg/440px-Pensive_Bodhisattva_01.jpg",
         "description": "높이 83.2cm의 반가사유상으로, 부드러운 미소와 섬세한 표현이 특징입니다. 삼국시대 불교 조각의 최고 걸작으로 국보 83호와 함께 '사유의 방'에 전시되어 있습니다.",
         "quiz": {
             "question": "국보 제78호 반가사유상이 현재 전시된 곳은?",
@@ -70,6 +71,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "사유의 방 (2층)",
         "designation": "국보 제83호",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Korea-National_Treasure_83-Geumdong_Mireukbosal_Bangasayusang-01.jpg/440px-Korea-National_Treasure_83-Geumdong_Mireukbosal_Bangasayusang-01.jpg",
         "description": "높이 93.5cm의 대형 반가사유상입니다. 한쪽 다리를 다른 쪽 무릎 위에 올리고, 손가락을 뺨에 댄 채 깊은 생각에 잠긴 모습이 특징입니다.",
         "quiz": {
             "question": "'반가사유'는 어떤 자세를 의미할까요?",
@@ -87,6 +89,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "역사의 길 (1층 로비)",
         "designation": "국보 제86호",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Ten-story_Stone_Pagoda_of_Gyeongcheonsa_Temple_Site.jpg/440px-Ten-story_Stone_Pagoda_of_Gyeongcheonsa_Temple_Site.jpg",
         "description": "높이 약 13.5m의 대리석 석탑입니다. 원나라 양식의 영향을 받았으며, 전체에 불·보살·나한 등이 섬세하게 조각되어 있습니다. 일제강점기 일본 반출 후 반환되었습니다.",
         "quiz": {
             "question": "경천사 십층석탑의 재료는 무엇일까요?",
@@ -104,6 +107,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "선사고대관 신라실 (1층)",
         "designation": "국보 제87호",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Gold_Crown_from_Geumgwanchong.jpg/440px-Gold_Crown_from_Geumgwanchong.jpg",
         "description": "1921년 경주 금관총에서 발견된 신라 금관입니다. 나뭇가지 모양(出자형)과 사슴뿔 모양의 세움 장식이 특징이며, 신라 왕족의 권위를 상징합니다.",
         "quiz": {
             "question": "신라 금관의 세움 장식은 어떤 모양을 하고 있을까요?",
@@ -121,6 +125,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "선사고대관 신라실 (1층)",
         "designation": "국보 제91호",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Silla_-_Warrior_on_Horseback_-_01.jpg/440px-Silla_-_Warrior_on_Horseback_-_01.jpg",
         "description": "경주 금령총에서 출토된 말을 탄 인물 형상의 토기입니다. 주인상과 하인상 두 점이 한 쌍을 이루며, 신라의 뛰어난 토기 제작 기술을 보여줍니다.",
         "quiz": {
             "question": "기마인물형 토기가 출토된 무덤의 이름은?",
@@ -138,6 +143,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "조각공예관 금속공예실 (3층)",
         "designation": "국보 제92호",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Bronze_Kundika_with_Silver_Inlaid_Willow_and_Waterfowl_Design.jpg/440px-Bronze_Kundika_with_Silver_Inlaid_Willow_and_Waterfowl_Design.jpg",
         "description": "높이 37.5cm의 정병으로, 은입사 기법으로 버드나무와 물새 무늬를 새겼습니다. 고려시대 금속공예의 정수를 보여주는 걸작입니다.",
         "quiz": {
             "question": "'은입사' 기법은 어떤 기술일까요?",
@@ -155,6 +161,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "조각공예관 도자공예실 (3층)",
         "designation": "국보 제309호",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/White_Porcelain_Moon_Jar.jpg/440px-White_Porcelain_Moon_Jar.jpg",
         "description": "높이 약 40cm의 둥근 백자 항아리입니다. 보름달처럼 풍만한 형태가 특징이며, 조선 백자의 순수한 아름다움을 대표합니다.",
         "quiz": {
             "question": "백자 달항아리의 이름이 '달항아리'인 이유는?",
@@ -172,6 +179,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "선사고대관 고구려실 (1층)",
         "designation": "국보 제119호",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Gilt-bronze_Standing_Buddha_with_Inscription_of_Year_Yeonga_7.jpg/440px-Gilt-bronze_Standing_Buddha_with_Inscription_of_Year_Yeonga_7.jpg",
         "description": "고구려 불상 중 유일하게 제작 연도가 새겨진 불상입니다. '연가 7년(539년)'이라는 명문이 있어 고구려 불교 미술 연구에 매우 중요합니다.",
         "quiz": {
             "question": "이 불상이 특별한 이유는?",
@@ -189,6 +197,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "선사고대관 청동기실 (1층)",
         "designation": "국보 제141호",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Multi-knobbed_Fine-patterned_Mirror.jpg/440px-Multi-knobbed_Fine-patterned_Mirror.jpg",
         "description": "여러 개의 꼭지(多鈕)가 달린 청동 거울로, 머리카락보다 가는 1만 3천여 개의 선으로 동심원 무늬를 새겼습니다. 청동기시대 금속공예의 최고 걸작입니다.",
         "quiz": {
             "question": "다뉴세문경의 '세문'은 무엇을 의미할까요?",
@@ -206,6 +215,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "서화관 (2층)",
         "designation": "국보 제216호",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Inwangjesaekdo.jpg/440px-Inwangjesaekdo.jpg",
         "description": "겸재 정선이 76세에 그린 진경산수화의 걸작입니다. 비 갠 후 인왕산의 모습을 담았으며, 이건희 컬렉션으로 2021년 국립중앙박물관에 기증되었습니다.",
         "quiz": {
             "question": "'인왕제색'의 뜻은 무엇일까요?",
@@ -223,6 +233,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "조각공예관 불교조각실 (3층)",
         "designation": "국보 제128호",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Gilt-bronze_Standing_Avalokitesvara_Bodhisattva.jpg/440px-Gilt-bronze_Standing_Avalokitesvara_Bodhisattva.jpg",
         "description": "높이 15.2cm의 백제 보살상입니다. 삼면보관을 쓰고 있으며, 부드럽고 유연한 자태가 백제 불상의 특징을 잘 보여줍니다. 이건희 컬렉션으로 기증되었습니다.",
         "quiz": {
             "question": "이 불상이 보여주는 백제 불상의 특징은?",
@@ -240,6 +251,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "조각공예관 도자공예실 (3층)",
         "designation": "국보 제219호",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Blue_and_White_Porcelain_Jar_with_Plum_and_Bamboo_Design.jpg/440px-Blue_and_White_Porcelain_Jar_with_Plum_and_Bamboo_Design.jpg",
         "description": "청화안료로 매화와 대나무를 그린 조선 초기 백자입니다. 세련된 문양과 조형미가 뛰어나 조선 청화백자의 대표작으로 평가됩니다. 이건희 컬렉션으로 기증되었습니다.",
         "quiz": {
             "question": "'청화백자'의 '청화'는 무엇을 의미할까요?",
@@ -257,6 +269,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "선사고대관 신라실 (1층)",
         "designation": "국보 제3호",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Bukhansan_Silla_Jinheung_Sunsubi.jpg/440px-Bukhansan_Silla_Jinheung_Sunsubi.jpg",
         "description": "신라 진흥왕이 북한산 지역을 순행한 기념으로 세운 비석입니다. 원래 북한산 비봉에 있었으나 야외 훼손을 막기 위해 박물관으로 옮겨졌습니다.",
         "quiz": {
             "question": "진흥왕 순수비가 세워진 이유는?",
@@ -274,6 +287,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "서화관 불교회화실 (2층)",
         "designation": "국보",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Korea-Goryeo-Avalokitesvara-Water_Moon-Kagami_jinja-01.jpg/440px-Korea-Goryeo-Avalokitesvara-Water_Moon-Kagami_jinja-01.jpg",
         "description": "물가 바위에 앉아 있는 관음보살을 그린 고려 불화입니다. 섬세한 필치와 화려한 색채가 특징이며, 고려 불교 회화의 최고 걸작으로 평가됩니다.",
         "quiz": {
             "question": "'수월관음'은 어떤 모습의 관음보살일까요?",
@@ -291,6 +305,7 @@ ARTIFACTS = {
         "location": "국립중앙박물관",
         "gallery": "조각공예관 도자공예실 (3층)",
         "designation": "국보 제116호",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Celadon_Gourd-shaped_Bottle_with_Inlaid_Peony_Design.jpg/440px-Celadon_Gourd-shaped_Bottle_with_Inlaid_Peony_Design.jpg",
         "description": "표주박 모양의 고려청자로, 상감 기법으로 모란 무늬를 새겼습니다. 비취색 유약과 세련된 형태가 고려청자의 아름다움을 대표합니다.",
         "quiz": {
             "question": "고려청자의 '상감 기법'은 어떤 방식일까요?",

@@ -213,21 +213,41 @@ with chat_container:
             col1, col2, col3 = st.columns([1, 4, 1])
 
             with col1:
-                # 왼쪽: 아이콘/이미지 영역
-                st.markdown(f"""
-                <div style="
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    border-radius: 8px;
-                    padding: 15px;
-                    text-align: center;
-                    color: white;
-                    font-size: 24px;
-                    height: 70px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                ">🏛️</div>
-                """, unsafe_allow_html=True)
+                # 왼쪽: 이미지 영역
+                image_url = artifact.get('image_url', '')
+                if image_url:
+                    try:
+                        st.image(image_url, width=70)
+                    except Exception:
+                        st.markdown(f"""
+                        <div style="
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            border-radius: 8px;
+                            padding: 15px;
+                            text-align: center;
+                            color: white;
+                            font-size: 24px;
+                            height: 70px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        ">🏛️</div>
+                        """, unsafe_allow_html=True)
+                else:
+                    st.markdown(f"""
+                    <div style="
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        border-radius: 8px;
+                        padding: 15px;
+                        text-align: center;
+                        color: white;
+                        font-size: 24px;
+                        height: 70px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    ">🏛️</div>
+                    """, unsafe_allow_html=True)
 
             with col2:
                 # 가운데: 유물 정보
