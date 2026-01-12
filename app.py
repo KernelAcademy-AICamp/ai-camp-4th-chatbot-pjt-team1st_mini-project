@@ -54,11 +54,11 @@ if "chat_history" not in st.session_state:
 if "quiz_started" not in st.session_state:
     st.session_state.quiz_started = False
 
-if "api_key" not in st.session_state:
-    st.session_state.api_key = ""
-
 if "llm_service" not in st.session_state:
-    st.session_state.llm_service = LLMService()
+    import os
+    # 환경변수에서 API 키 로드
+    api_key = os.getenv("ANTHROPIC_API_KEY", "")
+    st.session_state.llm_service = LLMService(api_key)
 
 if "user_question" not in st.session_state:
     st.session_state.user_question = ""
@@ -117,28 +117,10 @@ st.markdown(
 # ============================================================
 
 with st.sidebar:
-    st.markdown("## ⚙️ 설정")
+    st.markdown("## 🏛️ 박물관 퀴즈")
     st.markdown("---")
 
-    st.markdown("### 🔑 Claude API 키")
-    api_key = st.text_input(
-        "API Key",
-        type="password",
-        value=st.session_state.api_key,
-        placeholder="sk-ant-...",
-        label_visibility="collapsed"
-    )
-
-    if api_key != st.session_state.api_key:
-        st.session_state.api_key = api_key
-        st.session_state.llm_service = LLMService(api_key)
-        if api_key:
-            st.success("✅ API 연결됨!")
-
-    if st.session_state.api_key:
-        st.info("🤖 AI 맞춤 해설이 활성화되었습니다.")
-    else:
-        st.warning("💡 API 키 없이도 기본 기능은 사용 가능합니다.\n\nAPI 키를 입력하면 궁금한 점에 대한 맞춤 해설을 받을 수 있어요!")
+    st.info("🤖 AI 맞춤 해설이 활성화되어 있습니다.")
 
     st.markdown("---")
     st.markdown("### 📊 현재 진행 상황")
