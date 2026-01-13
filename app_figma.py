@@ -14,7 +14,7 @@ from config.prompts import WELCOME_MESSAGES, MESSAGES, UI_LABELS
 from config.settings import APP_CONFIG, SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE
 
 # 데이터 import
-from data.artifacts import ARTIFACTS, find_artifact, get_artifact_list
+from data.artifacts import ARTIFACTS, find_artifact, get_artifact_list, get_artifact_by_id
 
 # 서비스 import
 from services.llm_service import LLMService
@@ -70,6 +70,9 @@ st.markdown("""
         font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif !important;
         margin: 0 !important;
         padding: 0 !important;
+        max-width: 393px !important;
+        min-width: 393px !important;
+        width: 393px !important;
     }
     
     /* Streamlit 기본 패딩/마진 완전 제거 */
@@ -80,13 +83,23 @@ st.markdown("""
     
     .main .block-container,
     .block-container,
-    [data-testid="stAppViewBlockContainer"] {
+    [data-testid="stAppViewBlockContainer"],
+    [data-testid="stVerticalBlock"],
+    [data-testid="stVerticalBlockBorderWrapper"],
+    .stMarkdown,
+    .element-container,
+    section.main > div {
         padding: 0 !important;
         padding-top: 0 !important;
         padding-bottom: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
         margin: 0 !important;
-        max-width: 100% !important;
-        min-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        max-width: 393px !important;
+        min-width: 393px !important;
+        width: 393px !important;
     }
     
     /* Streamlit 1.x 버전 상단 패딩 제거 */
@@ -105,7 +118,11 @@ st.markdown("""
     /* 모든 Streamlit 요소 간격 제거 */
     .stMarkdown, .element-container, div[data-testid="stVerticalBlock"] {
         margin: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
         padding: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
         gap: 0 !important;
     }
     
@@ -114,21 +131,31 @@ st.markdown("""
         margin: 0 !important;
     }
     
-    /* Streamlit 내부 컨테이너 */
-    div[data-testid="stAppViewContainer"] {
-        padding-top: 0 !important;
-        margin: 0 !important;
-    }
-    
-    div[data-testid="stMain"] {
+    /* Streamlit 내부 컨테이너 - 모든 padding/margin 제거 */
+    div[data-testid="stAppViewContainer"],
+    div[data-testid="stMain"],
+    section.main,
+    section.main > div,
+    section.main > div > div,
+    section.main > div > div > div {
         padding: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
         margin: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
     }
     
     /* 상단 여백 완전 제거 */
     .stApp > div:first-child {
         margin-top: 0 !important;
         padding-top: 0 !important;
+    }
+    
+    /* iframe 내부 컨테이너도 */
+    iframe {
+        margin: 0 !important;
+        padding: 0 !important;
     }
     
     /* ===== 헤더 스타일 ===== */
@@ -872,6 +899,360 @@ st.markdown("""
         background: #1a5ad4;
     }
     
+    /* ===== Type B: 투어 선택 카드 ===== */
+    .tour-selection-card {
+        background: #ffffff;
+        border: 2px solid #f3f3f3;
+        border-radius: 12px;
+        width: 343px;
+        height: 175px;
+        margin-left: 34px;
+        margin-top: 13px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+    
+    .tour-card-content {
+        width: 314px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+    }
+    
+    .tour-card-header {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+        width: 264px;
+    }
+    
+    .tour-card-title {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 15px;
+        font-weight: 700; /* Bold */
+        color: #161617;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
+    .tour-card-subtitle {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        color: #b1b2b7;
+        line-height: 1.4;
+        margin: 0;
+        text-align: center;
+    }
+    
+    .tour-card-button-wrapper {
+        width: 313px;
+    }
+    
+    .tour-card-button {
+        background: #246beb;
+        color: #ffffff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 10px 12px 10px;
+        width: 100%;
+        font-family: 'Pretendard', sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 0.32px;
+        line-height: 1.3;
+        cursor: pointer;
+    }
+    
+    .tour-card-button:hover {
+        background: #1a5ad4;
+    }
+    
+    .tour-card-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Pretendard', sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        color: #4b4b4b;
+        line-height: 1.3;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    
+    .tour-card-link-icon {
+        width: 6px;
+        height: 10px;
+        object-fit: contain;
+    }
+    
+    /* ===== 바텀시트 Type B: 유물 선택 ===== */
+    .bottom-sheet-b-item {
+        display: flex;
+        gap: 11px;
+        align-items: center;
+        padding: 0 15px 0 15px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .bottom-sheet-b-item:hover {
+        background: #f9f9f9;
+    }
+    
+    .bottom-sheet-b-item-image {
+        width: 80px;
+        height: 80px;
+        background: #f5f5f5;
+        border-radius: 8px;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+    
+    .bottom-sheet-b-item-content {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .bottom-sheet-b-item-details {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    
+    .bottom-sheet-b-item-badge {
+        background: #d9dddf;
+        border-radius: 1000px;
+        padding: 10px;
+        width: fit-content;
+        height: 19px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .bottom-sheet-b-item-badge-text {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        color: #345a6a;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
+    .bottom-sheet-b-item-title {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 15px;
+        font-weight: 700; /* Bold */
+        color: #161617;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
+    .bottom-sheet-b-item-info {
+        display: flex;
+        align-items: center;
+        gap: 1px;
+    }
+    
+    .bottom-sheet-b-item-info-icon {
+        width: 14px;
+        height: 14px;
+        object-fit: contain;
+    }
+    
+    .bottom-sheet-b-item-info-text {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        color: #b1b2b7;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
+    .bottom-sheet-b-item-checkbox {
+        width: 20px;
+        height: 20px;
+        border: 1px solid #b1b2b7;
+        border-radius: 4px;
+        background: #ffffff;
+        flex-shrink: 0;
+        cursor: pointer;
+        position: relative;
+    }
+    
+    .bottom-sheet-b-item-checkbox.checked {
+        background: #246beb;
+        border-color: #246beb;
+    }
+    
+    .bottom-sheet-b-item-checkbox.checked::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    
+    .bottom-sheet-b-button-wrapper {
+        padding: 22px 15px 44px 15px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .bottom-sheet-b-button {
+        background: #355a6a;
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        padding: 18px 10px;
+        width: 100%;
+        font-family: 'Pretendard', sans-serif;
+        font-size: 18px;
+        font-weight: 600; /* SemiBold */
+        letter-spacing: -0.54px;
+        line-height: 1.4;
+        cursor: pointer;
+    }
+    
+    .bottom-sheet-b-button:hover {
+        background: #2d4a57;
+    }
+    
+    /* ===== 바텀시트 Type A: 연령 선택 ===== */
+    .bottom-sheet-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .bottom-sheet-overlay.show {
+        display: block;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+    
+    .bottom-sheet {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        border-radius: 10px 10px 0 0;
+        box-shadow: 0px -4px 4px 0px rgba(0, 0, 0, 0.02);
+        z-index: 1001;
+        max-height: 80vh;
+        overflow-y: auto;
+        display: none;
+        animation: slideUp 0.3s ease;
+    }
+    
+    /* 바텀시트 Type B: 초기 6개만 표시, 스크롤 가능 */
+    #bottom-sheet-b {
+        max-height: calc(6 * 91px + 40px + 84px); /* 6개 항목(80px 이미지 + 11px gap) + 핸들(40px) + 버튼(84px) */
+        overflow-y: hidden; /* 초기에는 스크롤 숨김 */
+    }
+    
+    #bottom-sheet-b.show {
+        max-height: calc(10 * 91px + 40px + 84px); /* 10개 항목 + 핸들 + 버튼 */
+        overflow-y: auto; /* 스크롤 가능 */
+    }
+    
+    /* 바텀시트 Type B content 영역 */
+    #bottom-sheet-b .bottom-sheet-content {
+        display: flex;
+        flex-direction: column;
+        gap: 11px;
+        padding: 0;
+        max-height: calc(6 * 91px); /* 초기 6개 항목 높이 */
+        overflow-y: auto; /* 스크롤 가능 */
+        -webkit-overflow-scrolling: touch; /* iOS 부드러운 스크롤 */
+    }
+    
+    #bottom-sheet-b.show .bottom-sheet-content {
+        max-height: calc(10 * 91px); /* 스크롤 시 10개 항목 높이 */
+    }
+    
+    .bottom-sheet.show {
+        display: block;
+    }
+    
+    .bottom-sheet-handle {
+        width: 100%;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 18px;
+        box-sizing: border-box;
+    }
+    
+    .bottom-sheet-handle-bar {
+        width: 40px;
+        height: 4px;
+        background: #e1e1e1;
+        border-radius: 100px;
+    }
+    
+    .bottom-sheet-content {
+        padding: 22px 0 0 0;
+    }
+    
+    .bottom-sheet-item {
+        height: 58px;
+        border-bottom: 1px solid #f3f4f6;
+        display: flex;
+        align-items: center;
+        padding: 0 15px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .bottom-sheet-item:last-child {
+        border-bottom: none;
+        height: 57px;
+    }
+    
+    .bottom-sheet-item:hover {
+        background: #f9f9f9;
+    }
+    
+    .bottom-sheet-item-text {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 15px;
+        font-weight: 700; /* Bold */
+        color: #161617;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
     /* ===== 사용자 메시지 스타일 ===== */
     .user-message-container {
         display: flex;
@@ -1082,12 +1463,122 @@ st.markdown("""
     }
     
     /* ===== Style 4 - 도우미 선택 카드 ===== */
-    .helper-cards-container {
+    /* Streamlit 컨테이너가 Stage 1을 감싸는 경우 스타일 제거 */
+    .element-container:has(.stage-1-container),
+    [data-testid="stMarkdown"]:has(.stage-1-container),
+    [data-testid="stVerticalBlock"]:has(.stage-1-container),
+    [data-testid="stVerticalBlock"] > [data-testid="element-container"]:has(.stage-1-container) {
+        padding: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    /* Stage 1: 도우미 선택 화면 */
+    .stage-1-container {
+        margin-top: 150px;
+        margin-bottom: 105px;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        background: #ffffff;
+        padding: 0 !important;
+        height: 597px;
+        position: relative;
+        overflow: hidden;
+        width: 393px;
+        box-sizing: border-box;
+    }
+    
+    .stage-1-background-image {
+        position: absolute;
+        left: 0;
+        top: 247px;
+        width: 393px;
+        height: 201px;
+        object-fit: cover;
+        pointer-events: none;
+        z-index: 0;
+        display: none;
+    }
+    
+    /* 제목 영역 - Figma: width 393px, 중앙정렬, padding 10px 15px */
+    .stage-1-title {
+        position: absolute;
+        left: 0;
+        top: 153px; /* 393x597 컨테이너 내부 기준 */
+        width: 393px;
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
+        align-items: center;
+        padding: 10px 15px;
+        box-sizing: border-box;
+        font-family: 'Pretendard', sans-serif !important;
+        font-size: 22px !important;
+        font-weight: 600 !important;
+        color: #07364A !important;
+        line-height: 140% !important;
+        letter-spacing: -0.22px !important;
+        margin: 0;
+        white-space: nowrap;
+        z-index: 1;
+    }
+    
+    /* 정보 텍스트 영역 - Figma: width 393px, 중앙정렬, padding 0 15px */
+    .stage-1-info {
+        position: absolute;
+        left: 0;
+        top: 372px; /* 367px + 5px = 372px */
+        width: 393px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 3px;
+        padding: 0 15px;
+        box-sizing: border-box;
+        z-index: 2;
+    }
+    
+    .stage-1-info-icon {
+        width: 16px !important;
+        height: 16px !important;
+        min-width: 16px !important;
+        min-height: 16px !important;
+        object-fit: contain !important;
+        flex-shrink: 0 !important;
+        margin-top: -5px !important; /* 아이콘 살짝 위로 */
+    }
+    
+    .stage-1-info-text {
+        font-family: 'Pretendard', sans-serif !important;
+        font-size: 13px !important;
+        font-weight: 400 !important; /* Regular */
+        color: #b1b2b7 !important;
+        line-height: 1.4 !important;
+        letter-spacing: -0.13px !important;
+        margin: 0 !important;
+        white-space: nowrap;
+    }
+    
+    /* 카드 컨테이너 - Figma: 중앙정렬, gap 15px, padding 0 15px */
+    .helper-cards-container {
+        position: absolute;
+        left: 0;
+        top: 408px; /* 393x597 컨테이너 내부 기준 */
+        width: 393px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         gap: 15px;
-        max-width: 363px;
-        margin: 0 auto;
+        padding: 0 15px;
+        box-sizing: border-box;
+        z-index: 1;
+    }
+    
+    /* 카드 wrapper - flex 아이템 */
+    .helper-card-wrapper {
+        flex-shrink: 0;
     }
     
     .helper-card {
@@ -1095,7 +1586,6 @@ st.markdown("""
         width: 174px;
         height: 174px;
         border-radius: 20px;
-        border: 2px solid #e1e1e1;
         overflow: hidden;
         cursor: pointer;
         transition: transform 0.2s, box-shadow 0.2s;
@@ -1109,69 +1599,121 @@ st.markdown("""
     /* 흰색 배경 카드 (안내 도우미) */
     .helper-card-light {
         background: #ffffff;
+        border: 2px solid #e4e4e4;
     }
     
-    /* 청록색 배경 카드 (학습 도우미) */
+    /* 흰색 배경 카드 (학습 도우미) - 이미지 뒤 배경 흰색 */
     .helper-card-dark {
-        background: #345a6a;
+        background: #ffffff;
+        border: 2px solid #e1e1e1;
     }
     
     .helper-card-image {
         position: absolute;
-        width: 100%;
-        height: 100%;
         object-fit: cover;
+        object-position: center;
+        pointer-events: none;
+        display: block;
+        flex-shrink: 0;
+        flex-grow: 0;
+    }
+    
+    /* 영희 카드 이미지: 카드 174x174 내에서 커버 */
+    .helper-card-light .helper-card-image {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        object-position: center top !important;
+        pointer-events: none !important;
+    }
+    
+    /* 철수 카드 이미지: 카드 174x174 내에서 커버 */
+    .helper-card-dark .helper-card-image {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        object-position: center top !important;
+        pointer-events: none !important;
     }
     
     .helper-card-gradient {
         position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
+        top: 56px; /* Figma: top: 56px */
+        left: -2px; /* border offset */
+        width: 174px;
         height: 116px;
-        background: linear-gradient(to bottom, rgba(254,254,254,0), rgba(0,0,0,0.9));
+        background: linear-gradient(to bottom, rgba(254,254,254,0) 0%, rgba(0,0,0,0.9) 100%);
+        pointer-events: none;
     }
     
     .helper-card-name {
         position: absolute;
-        bottom: 10px;
+        top: 132px; /* Figma: top: 132px */
         left: 10px;
-        font-family: 'Pretendard', sans-serif;
-        font-size: 18px;
-        font-weight: 600;
-        color: #ffffff;
-        text-shadow: 0 0 4px rgba(0,0,0,0.3);
-        line-height: 1.4;
+        font-family: 'Pretendard', sans-serif !important;
+        font-size: 18px !important;
+        font-weight: 400 !important; /* Regular - weight 낮춤 */
+        color: #ffffff !important;
+        text-shadow: 0px 0px 4px rgba(0,0,0,0.3);
+        line-height: 1.4 !important;
+        white-space: nowrap;
+        z-index: 2;
+        pointer-events: none;
     }
     
     .helper-card-badge {
-        position: absolute;
-        top: 11px;
-        right: 11px;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        position: absolute !important;
+        top: 9px !important;
+        right: 9px !important;
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        min-height: 36px !important;
+        max-width: 36px !important;
+        max-height: 36px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        z-index: 3;
+        pointer-events: none;
+        overflow: hidden;
     }
     
     .helper-card-badge.blue {
-        background: #4a90e2;
+        background: #4a90e2 !important;
     }
     
     .helper-card-badge.purple {
-        background: #9b59b6;
+        background: #9b59b6 !important;
     }
     
     .helper-card-badge img {
-        width: 20px;
-        height: 20px;
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        min-height: 36px !important;
+        object-fit: contain !important;
+        display: block !important;
     }
     
-    /* 숨김 버튼 스타일 */
-    .helper-card-wrapper {
-        position: relative;
+    /* 버튼 스타일 */
+    .helper-card-button {
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+        width: 174px;
+        height: 174px;
     }
     
     .helper-card-wrapper .stButton {
@@ -1479,6 +2021,10 @@ def init_session_state():
     if "selected_artifacts" not in st.session_state:
         st.session_state.selected_artifacts = []
     
+    # 선택된 도우미 (None, "영희", "철수")
+    if "selected_helper" not in st.session_state:
+        st.session_state.selected_helper = None
+    
     # 퀴즈 진행 상태
     if "quiz_progress" not in st.session_state:
         st.session_state.quiz_progress = {
@@ -1508,7 +2054,7 @@ init_session_state()
 # 🛠️ 유틸리티 함수
 # ============================================================
 
-def add_bot_message(content: str, sender: str = "철수", msg_type: str = "A", button: dict = None, buttons: list = None, artifact_count: int = None, generation_state: str = None, difficulty: str = None, question: str = None, artifact_info: dict = None, choices: list = None, selected_choice: int = None, explanation: str = None, correct_count: int = None, total_questions: int = None, encouragement_text: str = None):
+def add_bot_message(content: str, sender: str = "철수", msg_type: str = "A", button: dict = None, artifact_count: int = None, generation_state: str = None, difficulty: str = None, question: str = None, artifact_info: dict = None, choices: list = None, selected_choice: int = None, explanation: str = None, correct_count: int = None, total_questions: int = None, encouragement_text: str = None, tour_title: str = None, tour_artifact_count: int = None):
     """
     봇 메시지 추가
     
@@ -1516,8 +2062,10 @@ def add_bot_message(content: str, sender: str = "철수", msg_type: str = "A", b
         content: 메시지 내용
         sender: 발신자
         msg_type: 메시지 타입 (A: 일반, B: 투어선택, C_1: 퀴즈생성중, C_2: 퀴즈생성완료, D: 퀴즈문제, E_1: 정답피드백, E_2: 오답피드백, F_1: 마지막정답피드백, F_2: 마지막오답피드백, G: 퀴즈결과)
-        button: Type B용 - {"text": "버튼텍스트", "action": "액션명"}
-        buttons: Type A용 - [{"text": "버튼1", "action": "액션1"}, ...]
+        button: Type A/B용 - {"text": "버튼텍스트", "action": "액션명"}
+        tour_title: Type B용 - 투어 제목 (예: "4학년 2반 현장학습 유물 경로")
+        tour_artifact_count: Type B용 - 투어의 유물 개수
+        content (Type B): "오~ {user_type}이구나! 네가 만들어둔 전시투어 중에서 오늘 퀴즈로 풀어볼 투어를 골라줘!" 형식 사용
         artifact_count: Type C_1/C_2용 - 유물 개수 (퀴즈 개수와 동일)
         generation_state: Type C_1용 - 생성 상태 ("analyzing", "generating", "reviewing", "completed")
         difficulty: Type C_2용 - 난이도 (user_type 사용, 예: "초등학생")
@@ -1538,10 +2086,14 @@ def add_bot_message(content: str, sender: str = "철수", msg_type: str = "A", b
         "type": msg_type
     }
     
-    if msg_type == "B" and button:
+    if msg_type in ["A", "B"] and button:
         msg["button"] = button
-    elif msg_type == "A" and buttons:
-        msg["buttons"] = buttons
+    
+    if msg_type == "B":
+        if tour_title:
+            msg["tour_title"] = tour_title
+        if tour_artifact_count is not None:
+            msg["tour_artifact_count"] = tour_artifact_count
     elif msg_type == "C_1":
         if artifact_count is not None:
             msg["artifact_count"] = artifact_count
@@ -1657,15 +2209,77 @@ def generate_quiz(artifact_name: str) -> dict:
 # 🎬 대화 플로우 함수
 # ============================================================
 
+def render_stage_1():
+    """Stage 1: 도우미 선택 화면"""
+    # 도우미 선택 처리
+    query_params = st.query_params
+    if "select_helper" in query_params:
+        helper_name = query_params["select_helper"]
+        if helper_name in ["영희", "철수"]:
+            st.session_state.selected_helper = helper_name
+            del st.query_params["select_helper"]
+            st.rerun()
+    
+    # Stage 1 HTML 렌더링
+    stage1_html = f'''
+    <div class="stage-1-container">
+        <img src="app/static/images/stage1_background.png" alt="" class="stage-1-background-image" />
+        <p class="stage-1-title">도우미를 선택해보세요</p>
+        <div class="stage-1-info">
+            <img src="app/static/images/icon_warning.png" alt="" class="stage-1-info-icon" />
+            <p class="stage-1-info-text">AI가 생성한 대화는 사실과 다를 수 있어요.</p>
+        </div>
+        <div class="helper-cards-container">
+            <div class="helper-card-wrapper">
+                <button class="helper-card-button" onclick="selectHelper('영희')">
+                    <div class="helper-card helper-card-light">
+                        <img src="app/static/images/helper_younghee.png" alt="" class="helper-card-image" />
+                        <div class="helper-card-gradient"></div>
+                        <p class="helper-card-name">안내 도우미 영희</p>
+                        <div class="helper-card-badge blue">
+                            <img src="app/static/images/icon_location.png" alt="" />
+                        </div>
+                    </div>
+                </button>
+            </div>
+            <div class="helper-card-wrapper">
+                <button class="helper-card-button" onclick="selectHelper('철수')">
+                    <div class="helper-card helper-card-dark">
+                        <img src="app/static/images/helper_chulsoo.png" alt="" class="helper-card-image" />
+                        <div class="helper-card-gradient"></div>
+                        <p class="helper-card-name">학습 도우미 철수</p>
+                        <div class="helper-card-badge purple">
+                            <img src="app/static/images/icon_study.png" alt="" />
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function selectHelper(helperName) {{
+            const url = new URL(window.location);
+            url.searchParams.set('select_helper', helperName);
+            window.location.href = url.toString();
+        }}
+    </script>
+    '''
+    
+    return stage1_html
+
 def handle_greeting():
-    """STEP 1: 그리팅"""
+    """Stage_2_1: 채팅 시작 (철수 선택 후)"""
     if len(st.session_state.messages) == 0:
+        # Stage_2_1 메시지: 봇 메시지 2개 + 연령 선택하기 버튼
         add_bot_message(
-            "안녕! 👋 나는 국립중앙박물관 학습 도우미야!\n"
-            "오늘 전시 재밌게 봤어?\n"
-            "퀴즈 풀기 전에 먼저 알려줘~",
-            msg_type="C",
-            buttons=[{"text": t, "action": f"select_{t}"} for t in USER_TYPES]
+            "안녕하세요! 국립중앙박물관 학습 도우미 철수입니다. 방금 관람하신 전시 내용을 퀴즈로 가볍게 되짚어보실 수 있어요.",
+            msg_type="A"
+        )
+        add_bot_message(
+            "저한테 연령대를 알려주시면, 이해하기 편한 난이도로 퀴즈를 준비해 드릴게요.",
+            msg_type="A",
+            button={"text": "연령 선택하기", "action": "select_user_type"}
         )
         st.session_state.current_step = STEPS["USER_TYPE"]
 
@@ -1701,14 +2315,24 @@ def handle_tour_check(has_tour: bool):
     if has_tour:
         add_user_message("응, 만들었어!" if st.session_state.user_type in ["어린이", "초등학생"] else "네, 만들었어요!")
         
-        # 유물 목록 표시
-        artifact_list = "\n".join([f"{i+1}. {name}" for i, name in enumerate(st.session_state.user_artifacts)])
-        
-        msg = get_tone_text(
-            f"좋습니다! 전시투어를 불러올게요~ ⏳\n\n와~ 유물 {len(st.session_state.user_artifacts)}개나 담으셨네요! 👏\n\n📜 나의 전시투어\n{artifact_list}",
-            f"좋아! 전시투어 불러올게~ ⏳\n\n와~ 유물 {len(st.session_state.user_artifacts)}개나 담았네! 👏\n\n📜 나의 전시투어\n{artifact_list}"
+        # Type B 메시지 생성 (투어 선택)
+        user_type = st.session_state.user_type or "초등학생"
+        content = get_tone_text(
+            f"오~ {user_type}이구나! 네가 만들어둔 전시투어 중에서 오늘 퀴즈로 풀어볼 투어를 골라줘!",
+            f"오~ {user_type}이구나! 네가 만들어둔 전시투어 중에서 오늘 퀴즈로 풀어볼 투어를 골라줘!"
         )
-        add_bot_message(msg)
+        
+        # 투어 정보 (임시 데이터 - 실제로는 사용자의 투어 데이터 사용)
+        tour_title = "4학년 2반 현장학습 유물 경로"  # 실제로는 사용자의 투어 제목
+        tour_artifact_count = len(st.session_state.user_artifacts)
+        
+        add_bot_message(
+            content=content,
+            msg_type="B",
+            button={"text": "이 투어에서 유물 선택하기", "action": "select_tour_artifacts"},
+            tour_title=tour_title,
+            tour_artifact_count=tour_artifact_count
+        )
         st.session_state.current_step = STEPS["ARTIFACT_SELECT"]
     else:
         add_user_message("아니, 아직..." if st.session_state.user_type in ["어린이", "초등학생"] else "아니요, 아직이요...")
@@ -2294,6 +2918,41 @@ def render_messages():
                     '</div></div></div>'
                 )
                 
+                # Type B: 투어 선택 카드 추가
+                if msg_type == "B":
+                    tour_title = msg.get("tour_title", "")
+                    tour_artifact_count = msg.get("tour_artifact_count", 0)
+                    button_data = msg.get("button", {})
+                    button_text = button_data.get("text", "이 투어에서 유물 선택하기") if button_data else "이 투어에서 유물 선택하기"
+                    
+                    message_parts.append(
+                        '<div class="tour-selection-card">'
+                        '<div class="tour-card-content">'
+                        '<div class="tour-card-header">'
+                        f'<p class="tour-card-title">{tour_title}</p>'
+                        f'<p class="tour-card-subtitle">유물 {tour_artifact_count}개</p>'
+                        '</div>'
+                        '<div class="tour-card-button-wrapper">'
+                        f'<button class="tour-card-button" onclick="openBottomSheetB()">{button_text}</button>'
+                        '</div>'
+                        '<div class="tour-card-link" onclick="handleOtherTourSelect()">'
+                        '<span>다른 투어 선택하기</span>'
+                        '<img class="tour-card-link-icon" src="app/static/images/icon_arrow_right.png" alt="arrow" />'
+                        '</div>'
+                        '</div>'
+                        '</div>'
+                    )
+                
+                # Type A에 버튼이 있으면 바텀시트 열기 버튼 추가
+                if msg_type == "A" and "button" in msg and msg["button"]:
+                    button_data = msg["button"]
+                    if button_data.get("action") == "select_user_type":
+                        message_parts.append(
+                            '<div class="type-a-button-wrapper" style="margin-left: 34px; margin-top: 12px;">'
+                            f'<button class="style1-button" onclick="openBottomSheetA()">{button_data.get("text", "연령 선택하기")}</button>'
+                            '</div>'
+                        )
+                
                 i += 1
                 
                 # 다음 메시지가 사용자 메시지인지 확인하고 같은 세션으로 묶기
@@ -2350,6 +3009,233 @@ def get_last_message_buttons():
     return None
 
 
+def render_bottom_sheet_type_a():
+    """바텀시트 Type A 렌더링 (연령 선택)"""
+    # query parameter로 user_type 선택 처리
+    query_params = st.query_params
+    
+    # user_type 선택 처리
+    if "select_user_type" in query_params:
+        user_type = query_params["select_user_type"]
+        if user_type in USER_TYPES:
+            st.session_state.user_type = user_type
+            # 사용자 메시지 추가
+            add_user_message(user_type)
+            del st.query_params["select_user_type"]
+            st.rerun()
+    
+    # 바텀시트 HTML 항목 생성
+    items_html = ''.join([f'''
+            <div class="bottom-sheet-item" onclick="selectUserType('{user_type}')">
+                <p class="bottom-sheet-item-text">{user_type}</p>
+            </div>
+            ''' for user_type in USER_TYPES])
+    
+    # 바텀시트 HTML (항상 렌더링하되, JavaScript로 표시/숨김 제어)
+    bottom_sheet_html = f'''
+    <div class="bottom-sheet-overlay" id="bottom-sheet-overlay-a" onclick="closeBottomSheetA()"></div>
+    <div class="bottom-sheet" id="bottom-sheet-a">
+        <div class="bottom-sheet-handle">
+            <div class="bottom-sheet-handle-bar"></div>
+        </div>
+        <div class="bottom-sheet-content">
+            {items_html}
+        </div>
+    </div>
+    
+    <script>
+        function openBottomSheetA() {{
+            document.getElementById('bottom-sheet-overlay-a').classList.add('show');
+            document.getElementById('bottom-sheet-a').classList.add('show');
+        }}
+        
+        function closeBottomSheetA() {{
+            document.getElementById('bottom-sheet-overlay-a').classList.remove('show');
+            document.getElementById('bottom-sheet-a').classList.remove('show');
+        }}
+        
+        function selectUserType(userType) {{
+            // Streamlit query parameter로 user_type 전달
+            const url = new URL(window.location);
+            url.searchParams.set('select_user_type', userType);
+            window.location.href = url.toString();
+        }}
+    </script>
+    '''
+    
+    return bottom_sheet_html
+
+
+def render_bottom_sheet_type_b():
+    """바텀시트 Type B 렌더링 (유물 선택)"""
+    import random
+    
+    # query parameter로 유물 선택 처리
+    query_params = st.query_params
+    
+    # 유물 선택/해제 처리
+    if "toggle_artifact" in query_params:
+        artifact_name = query_params["toggle_artifact"]
+        if artifact_name:
+            if "selected_artifacts" not in st.session_state:
+                st.session_state.selected_artifacts = []
+            
+            if artifact_name in st.session_state.selected_artifacts:
+                st.session_state.selected_artifacts.remove(artifact_name)
+            else:
+                st.session_state.selected_artifacts.append(artifact_name)
+            
+            del st.query_params["toggle_artifact"]
+            st.rerun()
+    
+    # 퀴즈 생성하기 버튼 클릭 처리
+    if "create_quiz" in query_params:
+        selected = st.session_state.get("selected_artifacts", [])
+        if len(selected) >= 3:  # 최소 3개 이상 선택
+            handle_artifact_selection(selected)
+            del st.query_params["create_quiz"]
+            st.rerun()
+    
+    # ARTIFACTS에서 15개 중 10개를 랜덤으로 선택
+    all_artifacts = list(ARTIFACTS.keys())
+    if "bottom_sheet_b_artifacts" not in st.session_state:
+        # 15개 중 10개를 랜덤으로 선택
+        if len(all_artifacts) >= 10:
+            st.session_state.bottom_sheet_b_artifacts = random.sample(all_artifacts, 10)
+        else:
+            st.session_state.bottom_sheet_b_artifacts = all_artifacts
+    
+    artifacts = st.session_state.bottom_sheet_b_artifacts
+    selected_artifacts = st.session_state.get("selected_artifacts", [])
+    
+    # 유물 항목 HTML 생성
+    artifact_items_html = ""
+    for artifact_name in artifacts:
+        # ARTIFACTS에서 유물 정보 가져오기
+        artifact_data = ARTIFACTS.get(artifact_name)
+        if not artifact_data:
+            # 이름으로 찾기 시도
+            artifact_data = find_artifact(artifact_name)
+        
+        if artifact_data:
+            artifact_image = artifact_data.get("image", "app/static/images/default_artifact.png")
+            artifact_period = artifact_data.get("period", "")
+            artifact_location = artifact_data.get("location", "")
+            artifact_room = artifact_data.get("room", "")
+            
+            # 배지 (연도) - period에서 추출하거나 기본값
+            badge_text = artifact_period.split()[0] if artifact_period and artifact_period.split() else "1799"
+            
+            # 정보 텍스트 형식: "선사·고대관 | 백제(106호)"
+            if artifact_location and artifact_room:
+                info_text = f"{artifact_location} | {artifact_room}"
+            elif artifact_location:
+                info_text = artifact_location
+            elif artifact_room:
+                info_text = artifact_room
+            else:
+                info_text = ""
+            
+            # 체크박스 상태
+            is_checked = artifact_name in selected_artifacts
+            checkbox_class = "checked" if is_checked else ""
+            
+            artifact_items_html += f'''
+            <div class="bottom-sheet-b-item" onclick="toggleArtifact('{artifact_name}')">
+                <img class="bottom-sheet-b-item-image" src="{artifact_image}" alt="{artifact_name}" />
+                <div class="bottom-sheet-b-item-content">
+                    <div class="bottom-sheet-b-item-badge">
+                        <p class="bottom-sheet-b-item-badge-text">{badge_text}</p>
+                    </div>
+                    <div class="bottom-sheet-b-item-details">
+                        <p class="bottom-sheet-b-item-title">{artifact_name}</p>
+                        <div class="bottom-sheet-b-item-info">
+                            <img class="bottom-sheet-b-item-info-icon" src="app/static/images/icon_location.png" alt="location" />
+                            <p class="bottom-sheet-b-item-info-text">{info_text}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom-sheet-b-item-checkbox {checkbox_class}" id="checkbox-{artifact_name}"></div>
+            </div>
+            '''
+    
+    # 바텀시트 HTML (항상 렌더링하되, JavaScript로 표시/숨김 제어)
+    bottom_sheet_html = f'''
+    <div class="bottom-sheet-overlay" id="bottom-sheet-overlay-b" onclick="closeBottomSheetB()"></div>
+    <div class="bottom-sheet" id="bottom-sheet-b">
+        <div class="bottom-sheet-handle">
+            <div class="bottom-sheet-handle-bar"></div>
+        </div>
+        <div class="bottom-sheet-content" style="gap: 11px;">
+            {artifact_items_html}
+        </div>
+        <div class="bottom-sheet-b-button-wrapper">
+            <button class="bottom-sheet-b-button" onclick="createQuiz()">퀴즈 생성하기</button>
+        </div>
+    </div>
+    
+    <script>
+        function openBottomSheetB() {{
+            const bottomSheet = document.getElementById('bottom-sheet-b');
+            const content = bottomSheet.querySelector('.bottom-sheet-content');
+            
+            // 초기 상태: 6개 항목만 표시
+            content.style.maxHeight = 'calc(6 * 91px)'; // 6개 항목 높이
+            content.scrollTop = 0; // 스크롤 위치 초기화
+            
+            // 스크롤 이벤트: 스크롤 시 10개 항목까지 확장
+            let hasScrolled = false;
+            const scrollHandler = function() {{
+                if (!hasScrolled && content.scrollTop > 0) {{
+                    hasScrolled = true;
+                    content.style.maxHeight = 'calc(10 * 91px)'; // 10개 항목 높이로 확장
+                }}
+            }};
+            
+            // 기존 이벤트 리스너 제거 후 새로 추가
+            content.removeEventListener('scroll', scrollHandler);
+            content.addEventListener('scroll', scrollHandler, {{ once: false }});
+            
+            // 바텀시트 표시
+            document.getElementById('bottom-sheet-overlay-b').classList.add('show');
+            bottomSheet.classList.add('show');
+        }}
+        
+        function closeBottomSheetB() {{
+            const bottomSheet = document.getElementById('bottom-sheet-b');
+            const content = bottomSheet.querySelector('.bottom-sheet-content');
+            
+            // 초기 상태로 리셋
+            content.style.maxHeight = 'calc(6 * 91px)';
+            content.scrollTop = 0;
+            
+            document.getElementById('bottom-sheet-overlay-b').classList.remove('show');
+            bottomSheet.classList.remove('show');
+        }}
+        
+        function toggleArtifact(artifactName) {{
+            // 체크박스 토글
+            const checkbox = document.getElementById('checkbox-' + artifactName);
+            checkbox.classList.toggle('checked');
+            
+            // Streamlit query parameter로 유물 전달
+            const url = new URL(window.location);
+            url.searchParams.set('toggle_artifact', artifactName);
+            window.location.href = url.toString();
+        }}
+        
+        function createQuiz() {{
+            // Streamlit query parameter로 퀴즈 생성 요청
+            const url = new URL(window.location);
+            url.searchParams.set('create_quiz', 'true');
+            window.location.href = url.toString();
+        }}
+    </script>
+    '''
+    
+    return bottom_sheet_html
+
+
 # ============================================================
 # 🖥️ 메인 UI
 # ============================================================
@@ -2389,19 +3275,25 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# 그리팅 처리
-handle_greeting()
-
-# 채팅 영역
-chat_html = f'''
-<div class="figma-chat-container" id="chat-container">
-    <div class="chat-content-wrapper">
-        {render_messages()}
-        <div id="chat-bottom"></div>
+# Stage 1 또는 채팅 영역 렌더링
+if st.session_state.selected_helper is None:
+    # Stage 1: 도우미 선택 화면
+    st.markdown(render_stage_1(), unsafe_allow_html=True)
+else:
+    # Stage_2_1 이후: 채팅 영역
+    # 그리팅 처리 (철수 선택 후 첫 채팅)
+    handle_greeting()
+    
+    # 채팅 영역
+    chat_html = f'''
+    <div class="figma-chat-container" id="chat-container">
+        <div class="chat-content-wrapper">
+            {render_messages()}
+            <div id="chat-bottom"></div>
+        </div>
     </div>
-</div>
-'''
-st.markdown(chat_html, unsafe_allow_html=True)
+    '''
+    st.markdown(chat_html, unsafe_allow_html=True)
 
 # Type F_1, F_2 버튼 처리 (마지막 메시지가 Type F_1 또는 F_2인 경우)
 if st.session_state.messages:
@@ -2422,6 +3314,12 @@ if st.session_state.messages:
             })
             st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
+
+# 바텀시트 Type A 렌더링
+st.markdown(render_bottom_sheet_type_a(), unsafe_allow_html=True)
+
+# 바텀시트 Type B 렌더링
+st.markdown(render_bottom_sheet_type_b(), unsafe_allow_html=True)
 
 # 자동 스크롤 JavaScript
 st.markdown("""
@@ -2667,12 +3565,13 @@ def handle_free_input(user_input: str):
         ))
 
 
-# 텍스트 입력 필드
-user_input = st.chat_input("메시지를 입력하세요...")
-
-if user_input:
-    handle_free_input(user_input)
-    st.rerun()
+# 텍스트 입력 필드 (Stage 1에서는 숨김)
+if st.session_state.selected_helper is not None:
+    user_input = st.chat_input("메시지를 입력하세요...")
+    
+    if user_input:
+        handle_free_input(user_input)
+        st.rerun()
 
 # 하단 네비게이션
 st.markdown("""
