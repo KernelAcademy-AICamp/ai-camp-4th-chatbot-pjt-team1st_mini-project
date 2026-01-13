@@ -521,22 +521,112 @@ st.markdown("""
         font-size: 14px !important;
     }
     
-    /* 텍스트 입력 필드 */
+    /* ===== 입력 필드 영역 ===== */
+    
+    /* wag - 배경 블러 레이어 */
+    .stChatInput::before {
+        content: '';
+        position: fixed;
+        bottom: 104px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 393px;
+        height: 65px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.3));
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        z-index: 997;
+        pointer-events: none;
+    }
+    
+    /* Input Container */
     .stChatInput {
         position: fixed !important;
         bottom: 104px !important;
         left: 0 !important;
         right: 0 !important;
-        background: white !important;
-        padding: 10px 15px !important;
+        background: transparent !important;
+        backdrop-filter: blur(2px) !important;
+        -webkit-backdrop-filter: blur(2px) !important;
+        padding: 10px 15px 15px 15px !important;
         z-index: 998 !important;
-        border-top: 1px solid #e0e0e0 !important;
+        border: none !important;
         margin: 0 !important;
     }
     
     .stChatInput > div {
         max-width: 393px;
         margin: 0 auto;
+    }
+    
+    /* Input Field */
+    .stChatInput textarea,
+    .stChatInput input,
+    .stChatInput [data-testid="stChatInputTextArea"] {
+        background: #f1f2f6 !important;
+        border: 1px solid #eeeeee !important;
+        border-radius: 100px !important;
+        padding: 10px 45px 10px 17px !important;
+        font-family: 'Pretendard', sans-serif !important;
+        font-size: 16px !important;
+        line-height: 15px !important;
+        color: #333333 !important;
+    }
+    
+    /* Placeholder */
+    .stChatInput textarea::placeholder,
+    .stChatInput input::placeholder {
+        color: #7e7f8a !important;
+        font-family: 'Pretendard', sans-serif !important;
+        font-size: 16px !important;
+    }
+    
+    /* Input Field - Focus 상태 */
+    .stChatInput textarea:focus,
+    .stChatInput input:focus,
+    .stChatInput [data-testid="stChatInputTextArea"]:focus {
+        outline: none !important;
+        border: 1px solid #345A6A !important;
+    }
+    
+    /* Send Button 공통 */
+    .stChatInput button[kind="primary"],
+    .stChatInput [data-testid="stChatInputSubmitButton"] {
+        background: transparent !important;
+        border: none !important;
+        width: 20px !important;
+        height: 20px !important;
+        padding: 0 !important;
+        position: absolute !important;
+        right: 26px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+    }
+    
+    .stChatInput button[kind="primary"] svg,
+    .stChatInput [data-testid="stChatInputSubmitButton"] svg {
+        display: none !important;
+    }
+    
+    /* Send Button - 기본/Focus 상태 (비활성화) */
+    .stChatInput button[kind="primary"]::after,
+    .stChatInput [data-testid="stChatInputSubmitButton"]::after,
+    .stChatInput button[kind="primary"]:disabled::after,
+    .stChatInput [data-testid="stChatInputSubmitButton"]:disabled::after {
+        content: '';
+        display: block;
+        width: 20px;
+        height: 20px;
+        background-image: url('app/static/images/icon_send.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+    
+    /* Send Button - Active 상태 (활성화, 입력 있음) */
+    .stChatInput button[kind="primary"]:not(:disabled)::after,
+    .stChatInput [data-testid="stChatInputSubmitButton"]:not(:disabled)::after {
+        background-image: url('app/static/images/icon_send_active.png');
     }
     
     /* 퀴즈 선택지 버튼 */
@@ -696,7 +786,7 @@ init_session_state()
 # 🛠️ 유틸리티 함수
 # ============================================================
 
-def add_bot_message(content: str, sender: str = "국립중앙박물관", msg_type: str = "A", button: dict = None, buttons: list = None):
+def add_bot_message(content: str, sender: str = "철수", msg_type: str = "A", button: dict = None, buttons: list = None):
     """
     봇 메시지 추가
     
@@ -1020,7 +1110,7 @@ def render_messages():
         msg_type = msg.get("type", "A")
         
         if msg["role"] == "assistant":
-            sender = msg.get("sender", "국립중앙박물관")
+            sender = msg.get("sender", "철수")
             timestamp = msg.get("timestamp", datetime.now().strftime("%H:%M"))
             content = msg["content"].replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>")
             

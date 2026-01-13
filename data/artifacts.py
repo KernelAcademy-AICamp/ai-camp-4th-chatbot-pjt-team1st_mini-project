@@ -5,6 +5,7 @@
 유물 정보를 추가/수정하는 파일입니다.
 새 유물을 추가하려면 ARTIFACTS 딕셔너리에 추가하세요.
 """
+from typing import Optional, List
 
 # ============================================================
 # 📜 유물 데이터베이스
@@ -139,7 +140,7 @@ ARTIFACTS = {
 # 🔍 유물 검색 함수
 # ============================================================
 
-def find_artifact(text: str) -> dict | None:
+def find_artifact(text: str) -> Optional[dict]:
     """텍스트에서 유물을 찾습니다."""
     if not text:
         return None
@@ -168,7 +169,7 @@ def get_artifact_list() -> list:
     return list(ARTIFACTS.keys())
 
 
-def get_artifact_by_id(artifact_id: str) -> dict | None:
+def get_artifact_by_id(artifact_id: str) -> Optional[dict]:
     """ID로 유물을 찾습니다."""
     for artifact in ARTIFACTS.values():
         if artifact.get("id") == artifact_id:
