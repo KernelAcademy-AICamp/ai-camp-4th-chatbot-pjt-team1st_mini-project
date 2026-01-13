@@ -477,6 +477,161 @@ st.markdown("""
         border-color: #999999 !important;
     }
     
+    /* ===== Style 2 - Primary 버튼 ===== */
+    /* 사용: st.button("텍스트", type="primary") */
+    .stButton > button[kind="primary"] {
+        background: #246beb !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 10px 10px 12px 10px !important;
+        height: auto !important;
+        font-family: 'Pretendard', sans-serif !important;
+        font-size: 16px !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.32px !important;
+        line-height: 1.3 !important;
+        box-shadow: none !important;
+    }
+    
+    .stButton > button[kind="primary"]:hover {
+        background: #1a5ad4 !important;
+    }
+    
+    /* ===== Style 3 - 퀴즈 생성 버튼 ===== */
+    /* 사용: with st.container(key="style3"): st.button("텍스트") */
+    [data-testid="stVerticalBlock"]:has(> [data-testid="element-container"] > [data-testid="stMarkdown"] > [data-key="style3"]),
+    div[data-testid="element-container"]:has([data-key="style3"]) + div .stButton > button,
+    [data-key="style3"] .stButton > button {
+        background: #355a6a !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 18px 10px !important;
+        height: auto !important;
+        font-family: 'Pretendard', sans-serif !important;
+        font-size: 18px !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.54px !important;
+        line-height: 1.4 !important;
+        box-shadow: none !important;
+        width: 100% !important;
+    }
+    
+    [data-key="style3"] .stButton > button:hover {
+        background: #2a4855 !important;
+    }
+    
+    /* ===== Style 4 - 도우미 선택 카드 ===== */
+    .helper-cards-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        max-width: 363px;
+        margin: 0 auto;
+    }
+    
+    .helper-card {
+        position: relative;
+        width: 174px;
+        height: 174px;
+        border-radius: 20px;
+        border: 2px solid #e1e1e1;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .helper-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    /* 흰색 배경 카드 (안내 도우미) */
+    .helper-card-light {
+        background: #ffffff;
+    }
+    
+    /* 청록색 배경 카드 (학습 도우미) */
+    .helper-card-dark {
+        background: #345a6a;
+    }
+    
+    .helper-card-image {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .helper-card-gradient {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 116px;
+        background: linear-gradient(to bottom, rgba(254,254,254,0), rgba(0,0,0,0.9));
+    }
+    
+    .helper-card-name {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        font-family: 'Pretendard', sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        color: #ffffff;
+        text-shadow: 0 0 4px rgba(0,0,0,0.3);
+        line-height: 1.4;
+    }
+    
+    .helper-card-badge {
+        position: absolute;
+        top: 11px;
+        right: 11px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .helper-card-badge.blue {
+        background: #4a90e2;
+    }
+    
+    .helper-card-badge.purple {
+        background: #9b59b6;
+    }
+    
+    .helper-card-badge img {
+        width: 20px;
+        height: 20px;
+    }
+    
+    /* 숨김 버튼 스타일 */
+    .helper-card-wrapper {
+        position: relative;
+    }
+    
+    .helper-card-wrapper .stButton {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        opacity: 0 !important;
+        z-index: 10 !important;
+    }
+    
+    .helper-card-wrapper .stButton > button {
+        width: 100% !important;
+        height: 174px !important;
+        background: transparent !important;
+        border: none !important;
+    }
+    
     /* 버튼 컨테이너 - Figma gap: 13px */
     div[data-testid="stHorizontalBlock"] {
         gap: 8px !important;
