@@ -356,6 +356,522 @@ st.markdown("""
         white-space: pre-wrap;
     }
     
+    /* ===== Type C: 퀴즈 생성 중 스타일 ===== */
+    .quiz-generation-status {
+        background: #e7eef7;
+        padding: 15px;
+        border-radius: 0 10px 10px 10px;
+        max-width: 343px;
+        margin-left: 34px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .loading-header {
+        display: flex;
+        align-items: center;
+        gap: 8.444px;
+    }
+    
+    .loading-spinner {
+        width: 36.751px;
+        height: 36.751px;
+        background-image: url('app/static/images/icon_loading.svg');
+        background-size: contain;
+        background-repeat: no-repeat;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        color: #333333;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
+    .progress-section {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .progress-bar {
+        background: #246beb;
+        height: 8px;
+        border-radius: 1000px;
+        width: 100%;
+    }
+    
+    .progress-text {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        color: #7a7a7a;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
+    .generation-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-top: 8px;
+    }
+    
+    .step-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .step-dot {
+        width: 8px;
+        height: 8px;
+        background: #246beb;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    
+    .step-item p {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        color: #333333;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
+    /* 상태별 스타일 */
+    .step-item.active .step-dot {
+        background: #246beb;
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    .step-item.active p {
+        color: #246beb;
+        font-weight: 500;
+    }
+    
+    .step-item.completed .step-dot {
+        background: #4caf50;
+    }
+    
+    .step-item.completed p {
+        color: #4caf50;
+    }
+    
+    .step-item:not(.active):not(.completed) .step-dot {
+        background: #cccccc;
+    }
+    
+    .step-item:not(.active):not(.completed) p {
+        color: #999999;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    
+    /* Type C_1 버튼 래퍼 */
+    .type-c-1-button-wrapper {
+        margin-top: 13px;
+        margin-left: 34px;
+    }
+    
+    /* Type C_1 Style 2 버튼 */
+    .type-c-1-button.style2-button {
+        background: #246beb !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 10px 10px 12px 10px !important;
+        height: auto !important;
+        font-family: 'Pretendard', sans-serif !important;
+        font-size: 16px !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.32px !important;
+        line-height: 1.3 !important;
+        box-shadow: none !important;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .type-c-1-button.style2-button:hover {
+        background: #1a5ad4 !important;
+    }
+    
+    /* ===== Type C_2: 퀴즈 생성 완료 스타일 ===== */
+    .quiz-completion-status {
+        background: #e7eef7;
+        padding: 15px;
+        border-radius: 0 10px 10px 10px;
+        max-width: 343px;
+        margin-left: 34px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .completion-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .completion-icon {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .completion-text {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        color: #333333;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
+    .quiz-info-card {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .quiz-info-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .quiz-info-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .quiz-info-title {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: #333333;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
+    .quiz-info-subtitle {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        color: #7a7a7a;
+        line-height: 1.4;
+        margin: 0;
+        text-align: center;
+        padding: 0 24px;
+    }
+    
+    .quiz-start-button-wrapper {
+        width: 100%;
+    }
+    
+    .quiz-start-button {
+        background: #246beb;
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 0;
+        width: 100%;
+        font-family: 'Pretendard', sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .quiz-start-button:hover {
+        background: #1a5ad4;
+    }
+    
+    /* ===== Type D: 퀴즈 문제 스타일 ===== */
+    .quiz-question-content {
+        background: #e7eef7;
+        padding: 15px;
+        border-radius: 0 10px 10px 10px;
+        max-width: 343px;
+        margin-left: 34px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .artifact-info-card {
+        background: #ffffff;
+        border: 1px solid #dddddd;
+        border-radius: 8px;
+        padding: 1px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+    
+    .artifact-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+    
+    .artifact-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        justify-content: center;
+        height: 80px;
+    }
+    
+    .artifact-title {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: #161617;
+        line-height: 1.3;
+        margin: 0;
+    }
+    
+    .artifact-period {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 12px;
+        font-weight: 400;
+        color: #7a7a7a;
+        line-height: 1.3;
+        margin: 0;
+    }
+    
+    .quiz-choices {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .quiz-choice-item {
+        background: #ffffff;
+        border-radius: 8px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 15px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .quiz-choice-item:hover {
+        background: #f5f5f5;
+    }
+    
+    .quiz-choice-radio {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #d1d5db;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    
+    .quiz-choice-radio.selected {
+        border-color: #246beb;
+    }
+    
+    .quiz-choice-radio.selected::after {
+        content: '';
+        width: 10px;
+        height: 10px;
+        background: #246beb;
+        border-radius: 50%;
+    }
+    
+    .quiz-choice-text {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        color: #333333;
+        line-height: 1.4;
+        margin: 0;
+        flex: 1;
+    }
+    
+    .quiz-submit-button-wrapper {
+        margin-top: 12px;
+    }
+    
+    .quiz-submit-button {
+        background: #246beb;
+        color: #ffffff;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 0;
+        width: 100%;
+        font-family: 'Pretendard', sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 0.32px;
+        line-height: 1.3;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .quiz-submit-button:hover {
+        background: #1a5ad4;
+    }
+    
+    /* ===== Type E_1/E_2: 퀴즈 피드백 스타일 ===== */
+    .quiz-feedback-bubble {
+        background: #e7eef7;
+        padding: 15px;
+        border-radius: 0 10px 10px 10px;
+        max-width: 343px;
+        margin-left: 34px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .feedback-title {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: #333333;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
+    .feedback-explanation {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        color: #333333;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
+    /* ===== Type F_1/F_2: 마지막 퀴즈 피드백 스타일 ===== */
+    /* Type E와 동일한 스타일 사용, 버튼만 추가 */
+    .quiz-final-button-wrapper {
+        margin-top: 15px; /* 버블과 버튼 사이 간격 */
+        margin-left: 34px; /* 버블과 정렬 */
+    }
+    
+    /* ===== Type G: 퀴즈 결과 스타일 ===== */
+    .quiz-result-container {
+        background: #e7eef7;
+        padding: 15px;
+        border-radius: 0 10px 10px 10px;
+        max-width: 343px;
+        margin-left: 34px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .quiz-result-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .quiz-result-trophy {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+    }
+    
+    .quiz-result-title {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 16px;
+        font-weight: 600; /* SemiBold */
+        color: #333333;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
+    .quiz-result-card {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .quiz-result-score-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .quiz-result-icon {
+        width: 16px;
+        height: 16px;
+        object-fit: contain;
+    }
+    
+    .quiz-result-score {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 14px;
+        font-weight: 600; /* SemiBold */
+        color: #333333;
+        line-height: 1.4;
+        margin: 0;
+    }
+    
+    .quiz-result-encouragement {
+        font-family: 'Pretendard', sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        color: #7a7a7a;
+        line-height: 1.4;
+        margin: 0;
+        text-align: center;
+        padding: 0 24px;
+    }
+    
+    .quiz-result-button-wrapper {
+        width: 100%;
+    }
+    
+    .quiz-result-button {
+        background: #246beb;
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 0;
+        width: 100%;
+        font-family: 'Pretendard', sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+    
+    .quiz-result-button:hover {
+        background: #1a5ad4;
+    }
+    
     /* ===== 사용자 메시지 스타일 ===== */
     .user-message-container {
         display: flex;
@@ -477,6 +993,27 @@ st.markdown("""
         border-color: #999999 !important;
     }
     
+    /* Style 1 버튼 (HTML 직접 렌더링용) */
+    .style1-button {
+        background: #ffffff !important;
+        color: #333333 !important;
+        border: 1px solid #cccccc !important;
+        border-radius: 1000px !important;
+        padding: 10px 20px !important;
+        height: 35px !important;
+        font-family: 'Pretendard', sans-serif !important;
+        font-size: 16px !important;
+        font-weight: 500 !important;
+        letter-spacing: -0.16px !important;
+        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.04) !important;
+        cursor: pointer !important;
+    }
+    
+    .style1-button:hover {
+        background: #f5f5f5 !important;
+        border-color: #999999 !important;
+    }
+    
     /* ===== Style 2 - Primary 버튼 ===== */
     /* 사용: st.button("텍스트", type="primary") */
     .stButton > button[kind="primary"] {
@@ -495,6 +1032,28 @@ st.markdown("""
     }
     
     .stButton > button[kind="primary"]:hover {
+        background: #1a5ad4 !important;
+    }
+    
+    /* Style 2 버튼 (HTML 직접 렌더링용) */
+    .style2-button {
+        background: #246beb !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 10px 10px 12px 10px !important;
+        font-family: 'Pretendard', sans-serif !important;
+        font-size: 16px !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.32px !important;
+        line-height: 1.3 !important;
+        height: auto !important;
+        min-width: fit-content !important;
+        box-shadow: none !important;
+        cursor: pointer !important;
+    }
+    
+    .style2-button:hover {
         background: #1a5ad4 !important;
     }
     
@@ -880,6 +1439,14 @@ USER_TYPE_TONE = {
 MIN_ARTIFACTS = 3
 MAX_ARTIFACTS = 10
 
+# 퀴즈 생성 상태
+QUIZ_GENERATION_STATES = {
+    "ANALYZING": "analyzing",        # 유물 정보 분석 중
+    "GENERATING": "generating",      # 난이도 맞춤 문제 생성 중
+    "REVIEWING": "reviewing",        # 최종 검토 중
+    "COMPLETED": "completed"         # 완료
+}
+
 
 # ============================================================
 # 💾 세션 상태 초기화
@@ -941,16 +1508,27 @@ init_session_state()
 # 🛠️ 유틸리티 함수
 # ============================================================
 
-def add_bot_message(content: str, sender: str = "철수", msg_type: str = "A", button: dict = None, buttons: list = None):
+def add_bot_message(content: str, sender: str = "철수", msg_type: str = "A", button: dict = None, buttons: list = None, artifact_count: int = None, generation_state: str = None, difficulty: str = None, question: str = None, artifact_info: dict = None, choices: list = None, selected_choice: int = None, explanation: str = None, correct_count: int = None, total_questions: int = None, encouragement_text: str = None):
     """
     봇 메시지 추가
     
     Args:
         content: 메시지 내용
         sender: 발신자
-        msg_type: 메시지 타입 (A: 일반, B: 단일버튼, C: 다중버튼)
+        msg_type: 메시지 타입 (A: 일반, B: 투어선택, C_1: 퀴즈생성중, C_2: 퀴즈생성완료, D: 퀴즈문제, E_1: 정답피드백, E_2: 오답피드백, F_1: 마지막정답피드백, F_2: 마지막오답피드백, G: 퀴즈결과)
         button: Type B용 - {"text": "버튼텍스트", "action": "액션명"}
-        buttons: Type C용 - [{"text": "버튼1", "action": "액션1"}, ...]
+        buttons: Type A용 - [{"text": "버튼1", "action": "액션1"}, ...]
+        artifact_count: Type C_1/C_2용 - 유물 개수 (퀴즈 개수와 동일)
+        generation_state: Type C_1용 - 생성 상태 ("analyzing", "generating", "reviewing", "completed")
+        difficulty: Type C_2용 - 난이도 (user_type 사용, 예: "초등학생")
+        question: Type D용 - 문제 텍스트
+        artifact_info: Type D용 - {"name": "유물명", "period": "시대", "image": "이미지경로"}
+        choices: Type D용 - [{"text": "선택지1"}, {"text": "선택지2"}, ...]
+        selected_choice: Type D용 - 선택된 선택지 인덱스 (0부터 시작)
+        explanation: Type E_1/E_2/F_1/F_2용 - 피드백 설명 (Gemini 생성, 최대 80자)
+        correct_count: Type G용 - 맞춘 문제 수
+        total_questions: Type G용 - 전체 문제 수
+        encouragement_text: Type G용 - 격려 문구 (System Prompt로 제어, 예: "정말 잘했어~ 10문제 중 4문제나 맞췄네!")
     """
     msg = {
         "role": "assistant",
@@ -962,8 +1540,43 @@ def add_bot_message(content: str, sender: str = "철수", msg_type: str = "A", b
     
     if msg_type == "B" and button:
         msg["button"] = button
-    elif msg_type == "C" and buttons:
+    elif msg_type == "A" and buttons:
         msg["buttons"] = buttons
+    elif msg_type == "C_1":
+        if artifact_count is not None:
+            msg["artifact_count"] = artifact_count
+        if generation_state:
+            msg["generation_state"] = generation_state
+        else:
+            # 기본값: 첫 번째 상태
+            msg["generation_state"] = QUIZ_GENERATION_STATES["ANALYZING"]
+    elif msg_type == "C_2":
+        if artifact_count is not None:
+            msg["artifact_count"] = artifact_count
+        if difficulty:
+            msg["difficulty"] = difficulty
+        else:
+            # 기본값: 세션 상태에서 가져오기
+            msg["difficulty"] = st.session_state.get("user_type", "")
+    elif msg_type == "D":
+        if question:
+            msg["question"] = question
+        if artifact_info:
+            msg["artifact_info"] = artifact_info
+        if choices:
+            msg["choices"] = choices
+        if selected_choice is not None:
+            msg["selected_choice"] = selected_choice
+    elif msg_type in ["E_1", "E_2", "F_1", "F_2"]:
+        if explanation:
+            msg["explanation"] = explanation
+    elif msg_type == "G":
+        if correct_count is not None:
+            msg["correct_count"] = correct_count
+        if total_questions is not None:
+            msg["total_questions"] = total_questions
+        if encouragement_text:
+            msg["encouragement_text"] = encouragement_text
     
     st.session_state.messages.append(msg)
 
@@ -1107,18 +1720,51 @@ def handle_tour_check(has_tour: bool):
         add_bot_message(msg)
         st.session_state.current_step = STEPS["END"]
 
+def update_quiz_generation_state(state: str):
+    """Type C_1 메시지의 생성 상태 업데이트"""
+    # 마지막 Type C_1 메시지 찾기
+    for i in range(len(st.session_state.messages) - 1, -1, -1):
+        msg = st.session_state.messages[i]
+        if msg.get("type") == "C_1":
+            msg["generation_state"] = state
+            break
+
 def handle_artifact_selection(selected: list):
     """유물 선택 처리"""
     st.session_state.selected_artifacts = selected
     selected_names = ", ".join(selected)
-    add_user_message(f"{len(selected)}개 선택: {selected_names[:50]}...")
+    
+    # 유물 개수 변수
+    artifact_count = len(selected)
+    add_user_message(f"총 {artifact_count}개 선택 완료")
+    
+    # Type C_1: 퀴즈 생성 중 로딩 상태 표시 (초기 상태: analyzing)
+    add_bot_message(
+        content="",  # Type C_1는 content가 비어있고 구조가 다름
+        msg_type="C_1",
+        artifact_count=artifact_count,
+        generation_state=QUIZ_GENERATION_STATES["ANALYZING"]
+    )
+    
+    # 상태 업데이트: 유물 정보 분석 중 (이미 설정됨)
+    # TODO: Gemini API 호출 전에 상태 업데이트
+    # update_quiz_generation_state(QUIZ_GENERATION_STATES["ANALYZING"])
+    # st.rerun()
     
     # 퀴즈 생성
+    # TODO: Gemini API 호출 전에 상태 업데이트
+    # update_quiz_generation_state(QUIZ_GENERATION_STATES["GENERATING"])
+    # st.rerun()
+    
     quizzes = []
     for artifact_name in selected:
         quiz = generate_quiz(artifact_name)
         if quiz:
             quizzes.append(quiz)
+    
+    # TODO: 퀴즈 생성 완료 후 상태 업데이트
+    # update_quiz_generation_state(QUIZ_GENERATION_STATES["REVIEWING"])
+    # st.rerun()
     
     st.session_state.quiz_progress = {
         "current_index": 0,
@@ -1128,11 +1774,19 @@ def handle_artifact_selection(selected: list):
         "quizzes": quizzes
     }
     
-    msg = get_tone_text(
-        f"좋습니다! {len(selected)}개 유물로 퀴즈를 시작할게요! 🚀\n준비되셨나요?",
-        f"좋아! {len(selected)}개 유물로 퀴즈 시작할게! 🚀\n준비됐어?"
-    )
-    add_bot_message(msg)
+    # TODO: 최종 검토 완료 후 상태 업데이트
+    # update_quiz_generation_state(QUIZ_GENERATION_STATES["COMPLETED"])
+    # st.rerun()
+    
+    # Type C_1을 Type C_2로 변경 (퀴즈 생성 완료)
+    for i in range(len(st.session_state.messages) - 1, -1, -1):
+        msg = st.session_state.messages[i]
+        if msg.get("type") == "C_1":
+            msg["type"] = "C_2"
+            msg["artifact_count"] = artifact_count  # 퀴즈 개수 = 유물 개수
+            msg["difficulty"] = st.session_state.get("user_type", "")  # user_type 사용
+            break
+    
     st.session_state.current_step = STEPS["QUIZ_READY"]
 
 def handle_quiz_start():
@@ -1260,37 +1914,422 @@ def handle_end():
 def render_messages():
     """메시지 렌더링 - 타입별 처리"""
     message_parts = []
+    i = 0
     
-    for msg in st.session_state.messages:
+    while i < len(st.session_state.messages):
+        msg = st.session_state.messages[i]
+        msg_type = msg.get("type", "A")
+        
+        # Type D를 만나면 Quiz Session 시작 (Type D + 사용자 답변 + Type E_1/E_2)
+        if msg["role"] == "assistant" and msg_type == "D":
+            # Quiz Session 시작
+            message_parts.append('<div class="chat-session-wrapper">')
+            
+            # Type D 렌더링
+            sender = msg.get("sender", "철수")
+            timestamp = msg.get("timestamp", datetime.now().strftime("%H:%M"))
+            question = msg.get("question", "")
+            artifact_info = msg.get("artifact_info", {})
+            choices = msg.get("choices", [])
+            selected_choice = msg.get("selected_choice", None)
+            
+            artifact_name = artifact_info.get("name", "")
+            artifact_period = artifact_info.get("period", "")
+            artifact_image = artifact_info.get("image", "app/static/images/default_artifact.png")
+            
+            # 선택지 HTML 생성
+            choices_html = ""
+            for j, choice in enumerate(choices):
+                choice_text = choice.get("text", "")
+                is_selected = (j == selected_choice) if selected_choice is not None else False
+                selected_class = "selected" if is_selected else ""
+                
+                choices_html += (
+                    f'<div class="quiz-choice-item" data-choice-index="{j}">'
+                    f'<div class="quiz-choice-radio {selected_class}"></div>'
+                    f'<p class="quiz-choice-text">{choice_text}</p>'
+                    '</div>'
+                )
+            
+            message_parts.append(
+                f'<div class="chat-turn type-d">'
+                '<div class="bot-message-container">'
+                '<div class="bot-content-wrapper">'
+                '<div class="bot-header"><div class="bot-avatar">'
+                '<img src="app/static/images/profile.png" alt="profile"></div>'
+                f'<div class="bot-info"><span class="bot-name">{sender}</span>'
+                f'<span class="bot-timestamp">{timestamp}</span></div></div>'
+                '<div class="bot-bubble">'
+                f'<p>{question}</p>'
+                '</div>'
+                '<div class="quiz-question-content">'
+                '<div class="artifact-info-card">'
+                f'<img class="artifact-image" src="{artifact_image}" alt="{artifact_name}" />'
+                '<div class="artifact-info">'
+                f'<p class="artifact-title">{artifact_name}</p>'
+                f'<p class="artifact-period">{artifact_period}</p>'
+                '</div>'
+                '</div>'
+                '<div class="quiz-choices">'
+                f'{choices_html}'
+                '</div>'
+                '<div class="quiz-submit-button-wrapper">'
+                '<button class="quiz-submit-button" onclick="handleQuizSubmit()">정답 제출하기</button>'
+                '</div>'
+                '</div>'
+                '</div></div></div>'
+            )
+            
+            i += 1
+            
+            # 다음 메시지가 사용자 답변인지 확인
+            if i < len(st.session_state.messages) and st.session_state.messages[i]["role"] == "user":
+                user_msg = st.session_state.messages[i]
+                user_timestamp = user_msg.get("timestamp", datetime.now().strftime("%H:%M"))
+                user_content = user_msg["content"].replace("<", "&lt;").replace(">", "&gt;")
+                
+                message_parts.append(
+                    '<div class="chat-turn type-a">'
+                    '<div class="user-message-container">'
+                    f'<span class="user-timestamp">{user_timestamp}</span>'
+                    f'<div class="user-bubble"><p>{user_content}</p></div>'
+                    '</div></div>'
+                )
+                i += 1
+            
+            # 다음 메시지가 Type E_1, E_2, F_1, F_2인지 확인
+            if i < len(st.session_state.messages) and st.session_state.messages[i]["role"] == "assistant":
+                feedback_msg = st.session_state.messages[i]
+                feedback_type = feedback_msg.get("type", "")
+                
+                if feedback_type in ["E_1", "E_2", "F_1", "F_2"]:
+                    sender = feedback_msg.get("sender", "철수")
+                    timestamp = feedback_msg.get("timestamp", datetime.now().strftime("%H:%M"))
+                    explanation = feedback_msg.get("explanation", "")
+                    
+                    # Type F는 마지막 질문이므로 두 번째 버블 텍스트가 다름
+                    if feedback_type in ["F_1", "F_2"]:
+                        fixed_text = "궁금한 게 있으면 지금 바로 물어봐도 돼 😊<br>없으면 나한테 얘기해줘~ 퀴즈를 종료할게! 아래 버튼을 눌러서 퀴즈를 종료할 수도 있어."
+                    else:
+                        fixed_text = "궁금한 게 있으면 지금 바로 물어봐도 돼 😊<br>없으면 나한테 얘기해줘~ 다음 퀴즈로 넘어갈게!"
+                    
+                    feedback_title = "✅ 정답이야!" if feedback_type in ["E_1", "F_1"] else "😢 아쉽다..."
+                    
+                    message_parts.append(
+                        f'<div class="chat-turn type-{feedback_type.lower()}">'
+                        '<div class="bot-message-container">'
+                        '<div class="bot-content-wrapper">'
+                        '<div class="bot-header"><div class="bot-avatar">'
+                        '<img src="app/static/images/profile.png" alt="profile"></div>'
+                        f'<div class="bot-info"><span class="bot-name">{sender}</span>'
+                        f'<span class="bot-timestamp">{timestamp}</span></div></div>'
+                        '<div class="quiz-feedback-bubble">'
+                        f'<p class="feedback-title">{feedback_title}</p>'
+                        f'<p class="feedback-explanation">{explanation}</p>'
+                        '</div>'
+                        '<div class="bot-bubble">'
+                        f'<p>{fixed_text}</p>'
+                        '</div>'
+                        '</div></div></div>'
+                    )
+                    i += 1
+            
+            # Quiz Session 종료
+            message_parts.append('</div>')
+            
+            # Type E_1/E_2 이후 사용자 질문이 있는지 확인
+            # 사용자 질문 + Gemini 답변 = 새로운 Chat Session
+            while i < len(st.session_state.messages):
+                # 다음 메시지가 사용자 질문인지 확인
+                if st.session_state.messages[i]["role"] == "user":
+                    # 새로운 Chat Session 시작 (사용자 질문 + Gemini 답변)
+                    message_parts.append('<div class="chat-session-wrapper">')
+                    
+                    # 사용자 질문 추가
+                    user_msg = st.session_state.messages[i]
+                    user_timestamp = user_msg.get("timestamp", datetime.now().strftime("%H:%M"))
+                    user_content = user_msg["content"].replace("<", "&lt;").replace(">", "&gt;")
+                    
+                    message_parts.append(
+                        '<div class="chat-turn type-a">'
+                        '<div class="user-message-container">'
+                        f'<span class="user-timestamp">{user_timestamp}</span>'
+                        f'<div class="user-bubble"><p>{user_content}</p></div>'
+                        '</div></div>'
+                    )
+                    i += 1
+                    
+                    # 다음 메시지가 Gemini 답변(일반 bot 메시지)인지 확인
+                    if i < len(st.session_state.messages) and st.session_state.messages[i]["role"] == "assistant":
+                        bot_msg = st.session_state.messages[i]
+                        bot_msg_type = bot_msg.get("type", "A")
+                        
+                        # Type D, E_1, E_2, F_1, F_2가 아닌 일반 메시지만 처리 (Gemini 답변)
+                        if bot_msg_type not in ["D", "E_1", "E_2", "F_1", "F_2"]:
+                            bot_sender = bot_msg.get("sender", "철수")
+                            bot_timestamp = bot_msg.get("timestamp", datetime.now().strftime("%H:%M"))
+                            bot_content = bot_msg.get("content", "").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>")
+                            
+                            message_parts.append(
+                                f'<div class="chat-turn type-{bot_msg_type.lower()}">'
+                                '<div class="bot-message-container">'
+                                '<div class="bot-content-wrapper">'
+                                '<div class="bot-header"><div class="bot-avatar">'
+                                '<img src="app/static/images/profile.png" alt="profile"></div>'
+                                f'<div class="bot-info"><span class="bot-name">{bot_sender}</span>'
+                                f'<span class="bot-timestamp">{bot_timestamp}</span></div></div>'
+                                f'<div class="bot-bubble"><p>{bot_content}</p></div>'
+                                '</div></div></div>'
+                            )
+                            i += 1
+                        else:
+                            # Type D, E_1, E_2, F_1, F_2가 나오면 이 세션 종료하고 다음 루프에서 처리
+                            break
+                    
+                    # Chat Session 종료
+                    message_parts.append('</div>')
+                else:
+                    # 사용자 메시지가 아니면 종료 (다음 Type D나 다른 메시지 처리)
+                    break
+            
+            continue
+        
+        # 기존 로직: Type D가 아닌 경우
+        msg = st.session_state.messages[i]
         msg_type = msg.get("type", "A")
         
         if msg["role"] == "assistant":
             sender = msg.get("sender", "철수")
             timestamp = msg.get("timestamp", datetime.now().strftime("%H:%M"))
-            content = msg["content"].replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>")
             
-            # 봇 메시지 HTML (모든 타입 공통)
-            message_parts.append(
-                f'<div class="chat-turn type-{msg_type.lower()}">'
-                '<div class="bot-message-container">'
-                '<div class="bot-header"><div class="bot-avatar">'
-                '<img src="app/static/images/profile.png" alt="profile"></div>'
-                f'<div class="bot-info"><span class="bot-name">{sender}</span>'
-                f'<span class="bot-timestamp">{timestamp}</span></div></div>'
-                f'<div class="bot-bubble"><p>{content}</p></div>'
-                '</div></div>'
-            )
+            # Type C_1: 퀴즈 생성 중 (로딩 상태)
+            if msg_type == "C_1":
+                # Chat Session 시작
+                message_parts.append('<div class="chat-session-wrapper">')
+                
+                artifact_count = msg.get("artifact_count", 0)
+                generation_state = msg.get("generation_state", QUIZ_GENERATION_STATES["ANALYZING"])
+                
+                # 상태별 클래스 결정
+                analyzing_class = "active" if generation_state == QUIZ_GENERATION_STATES["ANALYZING"] else ("completed" if generation_state in [QUIZ_GENERATION_STATES["GENERATING"], QUIZ_GENERATION_STATES["REVIEWING"], QUIZ_GENERATION_STATES["COMPLETED"]] else "")
+                generating_class = "active" if generation_state == QUIZ_GENERATION_STATES["GENERATING"] else ("completed" if generation_state in [QUIZ_GENERATION_STATES["REVIEWING"], QUIZ_GENERATION_STATES["COMPLETED"]] else "")
+                reviewing_class = "active" if generation_state == QUIZ_GENERATION_STATES["REVIEWING"] else ("completed" if generation_state == QUIZ_GENERATION_STATES["COMPLETED"] else "")
+                
+                message_parts.append(
+                    f'<div class="chat-turn type-c-1">'
+                    '<div class="bot-message-container">'
+                    '<div class="bot-content-wrapper">'
+                    '<div class="bot-header"><div class="bot-avatar">'
+                    '<img src="app/static/images/profile.png" alt="profile"></div>'
+                    f'<div class="bot-info"><span class="bot-name">{sender}</span>'
+                    f'<span class="bot-timestamp">{timestamp}</span></div></div>'
+                    '<div class="quiz-generation-status">'
+                    '<div class="loading-header">'
+                    '<div class="loading-spinner"></div>'
+                    '<p class="loading-text">퀴즈를 생성하고 있어요...</p>'
+                    '</div>'
+                    '<div class="progress-section">'
+                    '<div class="progress-bar"></div>'
+                    f'<p class="progress-text">선택하신 {artifact_count}개 유물을 분석하고 있어요</p>'
+                    '</div>'
+                    '<div class="generation-steps">'
+                    f'<div class="step-item {analyzing_class}"><div class="step-dot"></div><p>유물 정보 분석 중</p></div>'
+                    f'<div class="step-item {generating_class}"><div class="step-dot"></div><p>난이도 맞춤 문제 생성 중</p></div>'
+                    f'<div class="step-item {reviewing_class}"><div class="step-dot"></div><p>최종 검토 중</p></div>'
+                    '</div>'
+                    '</div>'
+                    '</div></div>'
+                    '<div class="type-c-1-button-wrapper">'
+                    '<button class="type-c-1-button style2-button">퀴즈 생성하기</button>'
+                    '</div></div>'
+                )
+                
+                i += 1
+                
+                # 다음 메시지가 사용자 메시지인지 확인하고 같은 세션으로 묶기
+                if i < len(st.session_state.messages) and st.session_state.messages[i]["role"] == "user":
+                    user_msg = st.session_state.messages[i]
+                    user_timestamp = user_msg.get("timestamp", datetime.now().strftime("%H:%M"))
+                    user_content = user_msg["content"].replace("<", "&lt;").replace(">", "&gt;")
+                    
+                    message_parts.append(
+                        '<div class="chat-turn type-a">'
+                        '<div class="user-message-container">'
+                        f'<span class="user-timestamp">{user_timestamp}</span>'
+                        f'<div class="user-bubble"><p>{user_content}</p></div>'
+                        '</div></div>'
+                    )
+                    i += 1
+                
+                # Chat Session 종료
+                message_parts.append('</div>')
+            # Type C_2: 퀴즈 생성 완료
+            elif msg_type == "C_2":
+                # Chat Session 시작
+                message_parts.append('<div class="chat-session-wrapper">')
+                
+                # 퀴즈 개수: 유물 개수와 동일
+                artifact_count = msg.get("artifact_count", len(st.session_state.get("selected_artifacts", [])))
+                quiz_count = artifact_count  # 퀴즈 개수 변수
+                
+                # 난이도: user_type 사용
+                user_type = msg.get("difficulty", st.session_state.get("user_type", ""))
+                
+                message_parts.append(
+                    f'<div class="chat-turn type-c-2">'
+                    '<div class="bot-message-container">'
+                    '<div class="bot-content-wrapper">'
+                    '<div class="bot-header"><div class="bot-avatar">'
+                    '<img src="app/static/images/profile.png" alt="profile"></div>'
+                    f'<div class="bot-info"><span class="bot-name">{sender}</span>'
+                    f'<span class="bot-timestamp">{timestamp}</span></div></div>'
+                    '<div class="quiz-completion-status">'
+                    '<div class="completion-header">'
+                    '<img class="completion-icon" src="app/static/images/icon_check.png" alt="check" />'
+                    '<p class="completion-text">퀴즈 생성 완료!</p>'
+                    '</div>'
+                    '<div class="quiz-info-card">'
+                    '<div class="quiz-info-row">'
+                    '<img class="quiz-info-icon" src="app/static/images/icon_star.png" alt="star" />'
+                    f'<p class="quiz-info-title">총 {quiz_count}개의 문제가 준비되었어요</p>'
+                    '</div>'
+                    f'<p class="quiz-info-subtitle">{user_type} 난이도로 맞춤 제작된 퀴즈입니다</p>'
+                    '</div>'
+                    '<div class="quiz-start-button-wrapper">'
+                    '<button class="quiz-start-button" onclick="handleQuizStart()">퀴즈 시작하기</button>'
+                    '</div>'
+                    '</div>'
+                    '</div></div></div>'
+                )
+                
+                i += 1
+                
+                # 다음 메시지가 사용자 메시지인지 확인하고 같은 세션으로 묶기
+                if i < len(st.session_state.messages) and st.session_state.messages[i]["role"] == "user":
+                    user_msg = st.session_state.messages[i]
+                    user_timestamp = user_msg.get("timestamp", datetime.now().strftime("%H:%M"))
+                    user_content = user_msg["content"].replace("<", "&lt;").replace(">", "&gt;")
+                    
+                    message_parts.append(
+                        '<div class="chat-turn type-a">'
+                        '<div class="user-message-container">'
+                        f'<span class="user-timestamp">{user_timestamp}</span>'
+                        f'<div class="user-bubble"><p>{user_content}</p></div>'
+                        '</div></div>'
+                    )
+                    i += 1
+                
+                # Chat Session 종료
+                message_parts.append('</div>')
+            # Type G: 퀴즈 결과
+            elif msg_type == "G":
+                # Chat Session 시작
+                message_parts.append('<div class="chat-session-wrapper">')
+                
+                correct_count = msg.get("correct_count", 0)
+                total_questions = msg.get("total_questions", 0)
+                encouragement_text = msg.get("encouragement_text", f"정말 잘했어~ {total_questions}문제 중 {correct_count}문제나 맞췄네!")
+                
+                message_parts.append(
+                    f'<div class="chat-turn type-g">'
+                    '<div class="bot-message-container">'
+                    '<div class="bot-content-wrapper">'
+                    '<div class="bot-header"><div class="bot-avatar">'
+                    '<img src="app/static/images/profile.png" alt="profile"></div>'
+                    f'<div class="bot-info"><span class="bot-name">{sender}</span>'
+                    f'<span class="bot-timestamp">{timestamp}</span></div></div>'
+                    '<div class="quiz-result-container">'
+                    '<div class="quiz-result-header">'
+                    '<img class="quiz-result-trophy" src="app/static/images/icon_trophy.png" alt="trophy" />'
+                    '<p class="quiz-result-title">퀴즈 완료!</p>'
+                    '</div>'
+                    '<div class="quiz-result-card">'
+                    '<div class="quiz-result-score-row">'
+                    '<img class="quiz-result-icon" src="app/static/images/icon_star.png" alt="star" />'
+                    f'<p class="quiz-result-score">{correct_count}개 / {total_questions}개</p>'
+                    '</div>'
+                    f'<p class="quiz-result-encouragement">{encouragement_text}</p>'
+                    '</div>'
+                    '<div class="quiz-result-button-wrapper">'
+                    '<button class="quiz-result-button" onclick="handleRetryQuiz()">다시 도전하기</button>'
+                    '</div>'
+                    '</div>'
+                    '</div></div></div>'
+                )
+                
+                i += 1
+                
+                # 다음 메시지가 사용자 메시지인지 확인하고 같은 세션으로 묶기
+                if i < len(st.session_state.messages) and st.session_state.messages[i]["role"] == "user":
+                    user_msg = st.session_state.messages[i]
+                    user_timestamp = user_msg.get("timestamp", datetime.now().strftime("%H:%M"))
+                    user_content = user_msg["content"].replace("<", "&lt;").replace(">", "&gt;")
+                    
+                    message_parts.append(
+                        '<div class="chat-turn type-a">'
+                        '<div class="user-message-container">'
+                        f'<span class="user-timestamp">{user_timestamp}</span>'
+                        f'<div class="user-bubble"><p>{user_content}</p></div>'
+                        '</div></div>'
+                    )
+                    i += 1
+                
+                # Chat Session 종료
+                message_parts.append('</div>')
+            else:
+                # Type A, B, C_1, C_2: 일반 메시지
+                # Chat Session 시작
+                message_parts.append('<div class="chat-session-wrapper">')
+                
+                content = msg["content"].replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>")
+                message_parts.append(
+                    f'<div class="chat-turn type-{msg_type.lower()}">'
+                    '<div class="bot-message-container">'
+                    '<div class="bot-content-wrapper">'
+                    '<div class="bot-header"><div class="bot-avatar">'
+                    '<img src="app/static/images/profile.png" alt="profile"></div>'
+                    f'<div class="bot-info"><span class="bot-name">{sender}</span>'
+                    f'<span class="bot-timestamp">{timestamp}</span></div></div>'
+                    f'<div class="bot-bubble"><p>{content}</p></div>'
+                    '</div></div></div>'
+                )
+                
+                i += 1
+                
+                # 다음 메시지가 사용자 메시지인지 확인하고 같은 세션으로 묶기
+                if i < len(st.session_state.messages) and st.session_state.messages[i]["role"] == "user":
+                    user_msg = st.session_state.messages[i]
+                    user_timestamp = user_msg.get("timestamp", datetime.now().strftime("%H:%M"))
+                    user_content = user_msg["content"].replace("<", "&lt;").replace(">", "&gt;")
+                    
+                    message_parts.append(
+                        '<div class="chat-turn type-a">'
+                        '<div class="user-message-container">'
+                        f'<span class="user-timestamp">{user_timestamp}</span>'
+                        f'<div class="user-bubble"><p>{user_content}</p></div>'
+                        '</div></div>'
+                    )
+                    i += 1
+                
+                # Chat Session 종료
+                message_parts.append('</div>')
         else:
-            timestamp = msg.get("timestamp", datetime.now().strftime("%H:%M"))
-            content = msg["content"].replace("<", "&lt;").replace(">", "&gt;")
-            
-            message_parts.append(
-                '<div class="chat-turn type-a">'
-                '<div class="user-message-container">'
-                f'<span class="user-timestamp">{timestamp}</span>'
-                f'<div class="user-bubble"><p>{content}</p></div>'
-                '</div></div>'
-            )
+            # 사용자 메시지 (독립적으로 온 경우 - Type D 처리에서 이미 처리됨)
+            # Type D 처리에서 이미 처리된 경우가 아니면 여기서 처리
+            if i > 0 and st.session_state.messages[i-1].get("type") != "D":
+                timestamp = msg.get("timestamp", datetime.now().strftime("%H:%M"))
+                content = msg["content"].replace("<", "&lt;").replace(">", "&gt;")
+                
+                message_parts.append(
+                    '<div class="chat-session-wrapper">'
+                    '<div class="chat-turn type-a">'
+                    '<div class="user-message-container">'
+                    f'<span class="user-timestamp">{timestamp}</span>'
+                    f'<div class="user-bubble"><p>{content}</p></div>'
+                    '</div></div>'
+                    '</div>'
+                )
+            i += 1
     
     return ''.join(message_parts)
 
@@ -1363,6 +2402,26 @@ chat_html = f'''
 </div>
 '''
 st.markdown(chat_html, unsafe_allow_html=True)
+
+# Type F_1, F_2 버튼 처리 (마지막 메시지가 Type F_1 또는 F_2인 경우)
+if st.session_state.messages:
+    last_msg = st.session_state.messages[-1]
+    last_msg_type = last_msg.get("type", "")
+    
+    # 마지막 메시지가 Type F_1 또는 F_2이고, 아직 사용자가 "퀴즈 종료하기"를 누르지 않은 경우
+    if last_msg_type in ["F_1", "F_2"]:
+        # 마지막 메시지가 Type F_1 또는 F_2이고, 그 다음 메시지가 사용자 메시지가 아닌 경우에만 버튼 표시
+        # (사용자가 버튼을 누르면 사용자 메시지가 추가되고, 그 다음에 Type G가 나올 예정)
+        st.markdown('<div class="quiz-final-button-wrapper">', unsafe_allow_html=True)
+        if st.button("퀴즈 종료하기", key="quiz_end_button"):
+            # 사용자 메시지 추가
+            st.session_state.messages.append({
+                "role": "user",
+                "content": "퀴즈 종료하기",
+                "timestamp": datetime.now().strftime("%H:%M")
+            })
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # 자동 스크롤 JavaScript
 st.markdown("""
