@@ -29,7 +29,7 @@ class LLMService:
             try:
                 import google.generativeai as genai
                 genai.configure(api_key=api_key)
-                self.model = genai.GenerativeModel('gemini-2.0-flash')
+                self.model = genai.GenerativeModel(AI_CONFIG["model"])
                 self.client = True  # 클라이언트 활성화 표시
                 print("✅ Gemini API 연결됨")
             except ImportError:
@@ -67,7 +67,11 @@ class LLMService:
         if self.model:
             try:
                 full_prompt = f"{system_prompt}\n\n사용자: {user_message}"
-                response = self.model.generate_content(full_prompt)
+                generation_config = {
+                    "temperature": AI_CONFIG["temperature"],
+                    "max_output_tokens": AI_CONFIG["max_tokens"]
+                }
+                response = self.model.generate_content(full_prompt, generation_config=generation_config)
                 return response.text
             except Exception as e:
                 return f"API 오류: {str(e)}"
@@ -84,7 +88,13 @@ class LLMService:
                     artifact_name=artifact["name"]
                 )
 
-                response = self.model.generate_content(prompt)
+                generation_config = {
+                    "temperature": AI_CONFIG["temperature"],
+                    "max_output_tokens": AI_CONFIG["max_tokens"],
+                    "response_mime_type": "application/json"
+                }
+
+                response = self.model.generate_content(prompt, generation_config=generation_config)
 
                 # JSON 파싱
                 response_text = response.text
@@ -166,7 +176,11 @@ class LLMService:
 
 응답은 300자 이내로 간결하게 작성해주세요."""
 
-                response = self.model.generate_content(prompt)
+                generation_config = {
+                    "temperature": AI_CONFIG["temperature"],
+                    "max_output_tokens": AI_CONFIG["max_tokens"]
+                }
+                response = self.model.generate_content(prompt, generation_config=generation_config)
                 return response.text
             except Exception as e:
                 print(f"맞춤 해설 생성 오류: {e}")

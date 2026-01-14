@@ -10,7 +10,7 @@ APP_CONFIG = {
 }
 
 AI_CONFIG = {
-    "model": "claude-sonnet-4-20250514",
+    "model": "gemini-2.0-flash",
     "max_tokens": 1024,
     "temperature": 0.7,
 }
